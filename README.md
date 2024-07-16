@@ -19,6 +19,13 @@
 6. Blast them by using their self as database to pick the latest similar.
     `python script/ChunkByOverlap.py`
 
+```mermaid codes for below
+graph LR;
+　　Portal-->|发布/更新配置|Apollo配置中心;
+　　Apollo配置中心-->|实时推送|App;
+　　App-->|实时查询|Apollo配置中心;
+```
+
 
 ```flow
 st=>start: Assign random codon for each aa sequence
