@@ -19,24 +19,17 @@
 6. Blast them by using their self as database to pick the latest similar.
     `python script/ChunkByOverlap.py`
 
-```mermaid codes for below
-graph LR;
-　　Portal-->|发布/更新配置|Apollo配置中心;
-　　Apollo配置中心-->|实时推送|App;
-　　App-->|实时查询|Apollo配置中心;
-```
 
+```mermaid
+graph TD;
+    st[Assign random codon<br>for each aa sequence]
+    step1[Truncate each sequence<br>into 8 segments]
+    step2[Cd-hit alignment]
+    step3[Keep one segment from<br>each cluster and reconnect<br>the antibodies]
+    step4[Select the overlap<br>area based on cdr<br>region and sliding window]
+    e[Blast to the whole<br>sequence database to<br>select the best overlap region]
 
-```flow
-st=>start: Assign random codon for each aa sequence
-step1=>operation: Truncate each sequence into 8 segments|past
-step2=>operation: Cd-hit alignment|current
-step3=>operation: Keep one segment from each cluster and reconnect the antibodies|invalid
-step4=>operation: Select the overlap area based on cdr region and sliding window
-e=>end: Blast to the whole sequence database to select the best overlap region
-
-st->step1->step2->step3->step4->e
-
+    st-->step1-->step2-->step3-->step4-->e
 ```
 
 ## Explaining:
