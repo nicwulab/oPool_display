@@ -20,7 +20,7 @@
     `python script/ChunkByOverlap.py`
 
 
-```flowchart
+```flow
 st=>start: Assign random codon for each aa sequence
 step1=>operation: Truncate each sequence into 8 segments|past
 step2=>operation: Cd-hit alignment|current
