@@ -21,7 +21,7 @@
 
 
 ```mermaid
-graph TD;
+flowchart TD
     st[Assign random codon<br>for each aa sequence]
     step1[Truncate each sequence<br>into 8 segments]
     step2[Cd-hit alignment]
@@ -29,7 +29,12 @@ graph TD;
     step4[Select the overlap<br>area based on cdr<br>region and sliding window]
     e[Blast to the whole<br>sequence database to<br>select the best overlap region]
 
-    st-->step1-->step2-->step3-->step4-->e
+    subgraph one[Random Condon Selecetion]
+    st-->step1-->step2-->step3
+    end
+    subgraph two[Unique Truncate Site Selection]
+    step3-->step4-->e
+    end
 ```
 
 ## Explaining:
@@ -90,3 +95,10 @@ The codon table was from https://www.biologicscorp.com/tools/CodonUsage. Frequen
 After iteration step, the script would random select the number of negative results (50 as the example) and generate a number of codon pool. This is not the antibody full sequences pool, it is the segments pool. Each full antibody sequences are truncated into 8 segments which from 1 to 7 has exactly 99 bp and the 8th segment has the result of all sequences. This is in order to increasing the productivity of the result. Lets say, we have 1000 sequences wating for grouping, we generate a 2M random pool which each antibody has 2000 random codon sequences. By truncated them into 8 segments, we could possibly have 2000^7^ which is 1.28*e^30^ sequences by random combination.
 
 The segments are clustered by the cd-hid based on the similarity. After that, only one sequences was selected from each cluster to ensure the dissimilar among all segments. Sequences are reconnected by those segments (`script/cdhit_result.py`). 
+
+
+(Countinue...) According to size of the assembly library, 25 sequences included 2 positive results are selected into 1 assembly library. 
+
+
+
+
