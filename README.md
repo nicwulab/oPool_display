@@ -29,7 +29,7 @@ flowchart TD
     step4[Select the overlap<br>area based on cdr<br>region and sliding window]
     e[Blast to the whole<br>sequence database to<br>select the best overlap region]
 
-    subgraph one[Random Condon Selecetion]
+    subgraph one[Random Codon Selecetion]
     st-->step1-->step2-->step3
     end
     subgraph two[Unique Truncate Site Selection]
