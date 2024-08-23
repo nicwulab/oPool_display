@@ -1,0 +1,3 @@
+[submodule "20240501_PacBio_lib_assmb_screening"]
+	path = 20240501_PacBio_lib_assmb_screening
+	url = git@github.com:Karobben/20240501_PacBio_lib_assmb_screening.git
