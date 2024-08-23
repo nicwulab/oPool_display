@@ -61,4 +61,4 @@ heatmap_plot_new <- ggplot(df_new_long, aes(x = Antigen, y = Sample, fill = Conc
 print(heatmap_plot_new)
 
 # Save the heat map with smaller boxes
-ggsave("graph/elisa_ec50_heatmap.png", plot = heatmap_plot_new, width = 4, height = 2.5)
+ggsave("graph/ELISA_EC50_heatmap.png", plot = heatmap_plot_new, width = 4, height = 2.5)
