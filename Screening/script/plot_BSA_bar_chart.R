@@ -50,4 +50,4 @@ data <- read_tsv(input_file)
 colors <- c("CDR H3" = "orange", "Non-CDR H3 VH" = "#FFD700", "VL" = "pink")
 
 # Call the function to create and save the stacked bar chart
-create_stacked_bar_chart(data, colors, "stacked_bar_chart.png", 3, 1.5)
+create_stacked_bar_chart(data, colors, "graph/BSA_stacked_bar_chart.png", 3, 1.5)

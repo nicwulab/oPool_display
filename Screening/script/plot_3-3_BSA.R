@@ -36,4 +36,4 @@ data <- read_tsv(input_file)
 cdr_h3_color <- "orange"
 
 # Call the function to create and save the bar chart
-create_bar_chart(data, cdr_h3_color, "bar_plot.png", 3, 1.4)
+create_bar_chart(data, cdr_h3_color, "graph/BSA_IGHD3-3_bar_plot.png", 3, 1.4)
