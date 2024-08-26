@@ -4,6 +4,7 @@
 ## 1. Data Filtering:
     
 The table was download from the suplimental data of a paper. We delete unpaired antibodies, incompleted antibodies, and etc.
+
 `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
     - `-i`: input table from the paper
     - `-v`: filtering list. We remove the sequences from common families.
@@ -11,10 +12,12 @@ The table was download from the suplimental data of a paper. We delete unpaired 
     - `-g`: human IG seqeunces databased from ipyr for head and tail completion.
     - `-o`: out put results.
     After filtering, therer were 303 sequences left.
+
 `sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
     We manual delete the sequences which looked wired by manually check.
 
 ## 2. Sequence Segments iteration
+
 `python script/iteration.py -i result/2024_0228_filtered.csv -p 2000000 -n result/random_neg.csv -o result/TableS1_filtered.fa`
     - `-i`: filtered table as the input result
     - `-p`: Assign the number of total randome seqeunces you'd like to generate for select the unique seqeunces. The more seqeunces in the filtered table, the larger number you'd like to give
