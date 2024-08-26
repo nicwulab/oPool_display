@@ -6,12 +6,12 @@
 The table was download from the suplimental data of a paper. We delete unpaired antibodies, incompleted antibodies, and etc.
 
 `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
-    - `-i`: input table from the paper
-    - `-v`: filtering list. We remove the sequences from common families.
-    - `-d`: 
-    - `-g`: human IG seqeunces databased from ipyr for head and tail completion.
-    - `-o`: out put results.
-    After filtering, therer were 303 sequences left.
+- `-i`: input table from the paper
+- `-v`: filtering list. We remove the sequences from common families.
+- `-d`: 
+- `-g`: human IG seqeunces databased from ipyr for head and tail completion.
+- `-o`: out put results.
+After filtering, therer were 303 sequences left.
 
 `sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
     We manual delete the sequences which looked wired by manually check.
