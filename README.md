@@ -1,25 +1,52 @@
 # Pipeline for Antibody Library Construction 
 
-Test
 
-1. data filter:
-    - `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g /home/wenkanl2/miniconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv` 303 sequences left
-    - manual delete the sequences:
-    `sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
-2. Sequence Segments iteration
-    `python script/iteration.py -i result/2024_0228_filtered.csv -p 2000000 -n result/random_neg.csv -o result/TableS1_filtered.fa`
-    This process would also add some negative antibody as control.
-3. Cd-hit
-    `nohup bash script/cd-hit.sh > cd-hid.log &`
-4. Select the CD-HIT result and reassembly
-    `python script/cdhit_result.py -i result/TableS1_filtered.fa -n result/random_neg.csv -gs 25 -ng 12 -nn 2`
-5. select the overlap region and replacing them
-    `python script/Overlap_check.py -i result/TableS1_filtered.fa -n result/random_neg.csv`
-    The script would generate possible overlap primers for each sequence. Each sequence would be generate 30 possible primers around the CDR region for selection in lateral step
+## 1. Data Filtering:
+    
+The table was download from the suplimental data of a paper. We delete unpaired antibodies, incompleted antibodies, and etc.
+`python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
+    - `-i`: input table from the paper
+    - `-v`: filtering list. We remove the sequences from common families.
+    - `-d`: 
+    - `-g`: human IG seqeunces databased from ipyr for head and tail completion.
+    - `-o`: out put results.
+    After filtering, therer were 303 sequences left.
+`sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
+    We manual delete the sequences which looked wired by manually check.
 
-!!! Next test starts from here
-6. Blast them by using their self as database to pick the latest similar.
-    `python script/ChunkByOverlap.py`
+## 2. Sequence Segments iteration
+`python script/iteration.py -i result/2024_0228_filtered.csv -p 2000000 -n result/random_neg.csv -o result/TableS1_filtered.fa`
+    - `-i`: filtered table as the input result
+    - `-p`: Assign the number of total randome seqeunces you'd like to generate for select the unique seqeunces. The more seqeunces in the filtered table, the larger number you'd like to give
+    - `-o`: Output of final generated random sequences truncation. Each seqeunces was truncated into 8 segments. 
+    - `-n`: a list of seqeunces you'd like to use as the negative control. It looks like:
+        <pre>
+        ,Name,VH_nuc,VH_AA,VL_nuc,VL_AA,Heavy_V_gene,Heavy_J_gene,Heavy_D_gene,Light_V_gene,Light_J_gene,CDRL1_AA,CDRL2_AA,CDRL3_AA,CDRH1_AA,CDRH2_AA,CDRH3_AA,VH Genbank ID,VL Genbank ID,PMID,Reference,Specificity,Binds to,Donor ID,Donor Status,PDB,clonotype
+        3724,100F4,CAG...,QLQ...,CAG...,QSV...,IGHV4-61*03,IGHJ4*02,IGHD4-17*01,IGLV1-40*01,IGLJ1*01,SSNIGAGYS,GSN,QSYDSSLSGSQV,GDSVSSGSYY,MHGSGHT,ARALLTTVTTFEY,JF274052.1,JF274053.1,22238297,Hu et al. J Virol 86:2978-2989 (2012),Group 1,HA:Head,Hu_H5N1_infected,H5N1-infected individual,,
+        </pre>
+
+## 3. Cd-hit
+`nohup bash script/cd-hit.sh > cd-hid.log &`
+    - It takes the  `TableS1_filtered.fa` as input and grouping them based on the similarities. The results is on the 'cdhit' directory. 
+    - This step takes most of time. If you want a quick test, keep few sequences in the table `2024_0228_filtered.csv` and set smaller number for `-p`. Or In `script/cd-hit.sh`, remove `0.85` could also save lots of time.  
+
+## 4. Select the CD-HIT result and reassembly
+`python script/cdhit_result.py -i result/TableS1_filtered.fa -n result/random_neg.csv -gs 25 -ng 12 -nn 2`
+    - `-i`: input fasta from the step 2
+    - `-n`: negative control list same as step 2
+    - `-gs`: Number of final seqeunces for a group
+    - `-ng`: Number of groups in tatol
+    - `-nn`: number of negative control sequences from `-n` table
+
+## 5. Select the overlap region and replacing them
+`python script/Overlap_check.py -i result/TableS1_filtered.fa -n result/random_neg.csv`
+    - `-i`: input fasta from the step 2
+    - `-n`:
+
+The script would generate possible overlap primers for each sequence. Each sequence would be generate 30 possible primers around the CDR region for selection in lateral step
+
+## 6. Blast them by using their self as database to pick the latest similar.
+`python script/ChunkByOverlap.py`
 
 
 ```mermaid
