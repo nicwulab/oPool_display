@@ -14,7 +14,8 @@ The table was download from the suplimental data of a paper. We delete unpaired 
     After filtering, therer were 303 sequences left.
 
 - `sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
-    We manual delete the sequences which looked wired by manually check.
+    
+We manual delete the sequences which looked wired by manually check.
 
 ## 2. Sequence Segments iteration
 
@@ -49,11 +50,11 @@ The table was download from the suplimental data of a paper. We delete unpaired 
     - `-i`: input fasta from the step 2
     - `-n`:
 
-The script would generate possible overlap primers for each sequence. Each sequence would be generate 30 possible primers around the CDR region for selection in lateral step
+The script would generate possible overlap primers for each sequence. Similarities check was based on `blast+` with parameters `-query Primer/{group}  -db blastDB/{group}  -outfmt '6 qacc sacc evalue pident qcovs' -evalue 1e-1 -num_threads 8 -max_hsps 2 -word_size {i}` which each sequence would be generate 30 possible primers around the CDR region for selection in lateral step.
 
-## 6. Blast them by using their self as database to pick the latest similar.
-
+## 6. Truncate the sequences into different libraries
 - `python script/ChunkByOverlap.py`
+
 
 
 ```mermaid
