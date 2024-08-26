@@ -5,20 +5,20 @@
     
 The table was download from the suplimental data of a paper. We delete unpaired antibodies, incompleted antibodies, and etc.
 
-`python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
-- `-i`: input table from the paper
-- `-v`: filtering list. We remove the sequences from common families.
-- `-d`: 
-- `-g`: human IG seqeunces databased from ipyr for head and tail completion.
-- `-o`: out put results.
-After filtering, therer were 303 sequences left.
+- `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
+    - `-i`: input table from the paper
+    - `-v`: filtering list. We remove the sequences from common families.
+    - `-d`: 
+    - `-g`: human IG seqeunces databased from ipyr for head and tail completion.
+    - `-o`: out put results.
+    After filtering, therer were 303 sequences left.
 
-`sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
+- `sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
     We manual delete the sequences which looked wired by manually check.
 
 ## 2. Sequence Segments iteration
 
-`python script/iteration.py -i result/2024_0228_filtered.csv -p 2000000 -n result/random_neg.csv -o result/TableS1_filtered.fa`
+- `python script/iteration.py -i result/2024_0228_filtered.csv -p 2000000 -n result/random_neg.csv -o result/TableS1_filtered.fa`
     - `-i`: filtered table as the input result
     - `-p`: Assign the number of total randome seqeunces you'd like to generate for select the unique seqeunces. The more seqeunces in the filtered table, the larger number you'd like to give
     - `-o`: Output of final generated random sequences truncation. Each seqeunces was truncated into 8 segments. 
@@ -29,12 +29,14 @@ After filtering, therer were 303 sequences left.
         </pre>
 
 ## 3. Cd-hit
-`nohup bash script/cd-hit.sh > cd-hid.log &`
+
+- `nohup bash script/cd-hit.sh > cd-hid.log &`
     - It takes the  `TableS1_filtered.fa` as input and grouping them based on the similarities. The results is on the 'cdhit' directory. 
     - This step takes most of time. If you want a quick test, keep few sequences in the table `2024_0228_filtered.csv` and set smaller number for `-p`. Or In `script/cd-hit.sh`, remove `0.85` could also save lots of time.  
 
 ## 4. Select the CD-HIT result and reassembly
-`python script/cdhit_result.py -i result/TableS1_filtered.fa -n result/random_neg.csv -gs 25 -ng 12 -nn 2`
+
+- `python script/cdhit_result.py -i result/TableS1_filtered.fa -n result/random_neg.csv -gs 25 -ng 12 -nn 2`
     - `-i`: input fasta from the step 2
     - `-n`: negative control list same as step 2
     - `-gs`: Number of final seqeunces for a group
@@ -42,14 +44,16 @@ After filtering, therer were 303 sequences left.
     - `-nn`: number of negative control sequences from `-n` table
 
 ## 5. Select the overlap region and replacing them
-`python script/Overlap_check.py -i result/TableS1_filtered.fa -n result/random_neg.csv`
+
+- `python script/Overlap_check.py -i result/TableS1_filtered.fa -n result/random_neg.csv`
     - `-i`: input fasta from the step 2
     - `-n`:
 
 The script would generate possible overlap primers for each sequence. Each sequence would be generate 30 possible primers around the CDR region for selection in lateral step
 
 ## 6. Blast them by using their self as database to pick the latest similar.
-`python script/ChunkByOverlap.py`
+
+- `python script/ChunkByOverlap.py`
 
 
 ```mermaid
