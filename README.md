@@ -3,27 +3,26 @@
 
 ## 1. Data Filtering:
     
-The table was download from the suplimental data of a paper. We delete unpaired antibodies, incompleted antibodies, and etc.
+The table was downloaded from the supplemental data of a paper. We deleted unpaired antibodies, incomplete antibodies, etc.
 
 - `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
     - `-i`: input table from the paper
     - `-v`: filtering list. We remove the sequences from common families.
     - `-d`: 
-    - `-g`: human IG seqeunces databased from ipyr for head and tail completion.
-    - `-o`: out put results.
-    After filtering, therer were 303 sequences left.
+    - `-g`: human IG sequences database from ipyr for head and tail completion.
+    - `-o`: output results. After filtering, there were 303 sequences left.
 
 - `sed -i '/008_10_6C04/d;/K77-1A06/d;/36.a.02_Heavy/d' result/2024_0228_filtered.csv`
     
-We manual delete the sequences which looked wired by manually check.
+We manually deleted the sequences that looked weird by manually checking.
 
 ## 2. Sequence Segments iteration
 
 - `python script/iteration.py -i result/2024_0228_filtered.csv -p 2000000 -n result/random_neg.csv -o result/TableS1_filtered.fa`
     - `-i`: filtered table as the input result
-    - `-p`: Assign the number of total randome seqeunces you'd like to generate for select the unique seqeunces. The more seqeunces in the filtered table, the larger number you'd like to give
-    - `-o`: Output of final generated random sequences truncation. Each seqeunces was truncated into 8 segments. 
-    - `-n`: a list of seqeunces you'd like to use as the negative control. It looks like:
+    - `-p`: Assign the number of total random sequences you'd like to generate to select the unique sequences. The more sequences in the filtered table, the larger number you'd like to give.
+    - `-o`: Output of final generated random sequences truncation. Each sequence was truncated into 8 segments.
+    - `-n`: a list of sequences you'd like to use as the negative control.
         <pre>
         ,Name,VH_nuc,VH_AA,VL_nuc,VL_AA,Heavy_V_gene,Heavy_J_gene,Heavy_D_gene,Light_V_gene,Light_J_gene,CDRL1_AA,CDRL2_AA,CDRL3_AA,CDRH1_AA,CDRH2_AA,CDRH3_AA,VH Genbank ID,VL Genbank ID,PMID,Reference,Specificity,Binds to,Donor ID,Donor Status,PDB,clonotype
         3724,100F4,CAG...,QLQ...,CAG...,QSV...,IGHV4-61*03,IGHJ4*02,IGHD4-17*01,IGLV1-40*01,IGLJ1*01,SSNIGAGYS,GSN,QSYDSSLSGSQV,GDSVSSGSYY,MHGSGHT,ARALLTTVTTFEY,JF274052.1,JF274053.1,22238297,Hu et al. J Virol 86:2978-2989 (2012),Group 1,HA:Head,Hu_H5N1_infected,H5N1-infected individual,,
@@ -32,16 +31,16 @@ We manual delete the sequences which looked wired by manually check.
 ## 3. Cd-hit
 
 - `nohup bash script/cd-hit.sh > cd-hid.log &`
-    - It takes the  `TableS1_filtered.fa` as input and grouping them based on the similarities. The results is on the 'cdhit' directory. 
-    - This step takes most of time. If you want a quick test, keep few sequences in the table `2024_0228_filtered.csv` and set smaller number for `-p`. Or In `script/cd-hit.sh`, remove `0.85` could also save lots of time.  
+    - It takes the `TableS1_filtered.fa` as input and groups them based on the similarities. The results are in the 'cdhit' directory.
+    - This step takes most of the time. If you want a quick test, keep a few sequences in the table `2024_0228_filtered.csv` and set a smaller number for `-p`. Alternatively, in `script/cd-hit.sh`, removing `0.85` could also save a lot of time.
 
 ## 4. Select the CD-HIT result and reassembly
 
 - `python script/cdhit_result.py -i result/TableS1_filtered.fa -n result/random_neg.csv -gs 25 -ng 12 -nn 2`
     - `-i`: input fasta from the step 2
     - `-n`: negative control list same as step 2
-    - `-gs`: Number of final seqeunces for a group
-    - `-ng`: Number of groups in tatol
+    - `-gs`: Number of final sequences for a group
+    - `-ng`: Number of groups in total
     - `-nn`: number of negative control sequences from `-n` table
 
 ## 5. Select the overlap region and replacing them
@@ -50,7 +49,7 @@ We manual delete the sequences which looked wired by manually check.
     - `-i`: input fasta from the step 2
     - `-n`:
 
-The script would generate possible overlap primers for each sequence. Similarities check was based on `blast+` with parameters `-query Primer/{group}  -db blastDB/{group}  -outfmt '6 qacc sacc evalue pident qcovs' -evalue 1e-1 -num_threads 8 -max_hsps 2 -word_size {i}` which each sequence would be generate 30 possible primers around the CDR region for selection in lateral step.
+The script will generate possible overlap primers for each sequence. Similarity checks were based on `blast+` with parameters ``-query Primer/{group} -db blastDB/{group} -outfmt '6 qacc sacc evalue pident qcovs' -evalue 1e-1 -num_threads 8 -max_hsps 2 -word_size {i}`. Each sequence would generate 30 possible primers around the CDR region for selection in the later step.
 
 ## 6. Truncate the sequences into different libraries
 - `python script/ChunkByOverlap.py`
