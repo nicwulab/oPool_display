@@ -1,5 +1,7 @@
 # Pipeline for Antibody Library Construction 
 
+Test
+
 1. data filter:
     - `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g /home/wenkanl2/miniconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv` 303 sequences left
     - manual delete the sequences:
