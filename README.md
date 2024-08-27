@@ -3,7 +3,7 @@
 
 ## 1. Data Filtering:
     
-The table was downloaded from the supplemental data of a paper. We deleted unpaired antibodies, incomplete antibodies, etc.
+The table was downloaded from the supplemental data of a paper by [Yiquan Wang, et al; 2023](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10515799/). We deleted unpaired antibodies, incomplete antibodies, etc.
 
 - `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
     - `-i`: input table from the paper
