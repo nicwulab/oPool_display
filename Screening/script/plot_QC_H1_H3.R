@@ -69,7 +69,7 @@ neg_sample_df <- read_tsv("ref_files/neg_abs_list.tsv")
 neg_samples <- neg_sample_df$name
 print(neg_samples)
 
-new_group_samples <- c('31.a.55_Heavy','AG11-2F01', 'AG2-G02')
+new_group_samples <- c('31.a.55_Heavy','AG11-2F01', '042-100809_2F04')
 
 lib1_ref <- read_tsv('ref_files/300lib.tsv')
 lib1_list_of_samples <- lib1_ref$Name

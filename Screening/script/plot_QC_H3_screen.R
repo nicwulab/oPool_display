@@ -74,7 +74,7 @@ lib1_ref <- read_tsv('ref_files/300lib.tsv')
 lib1_list_of_samples <- lib1_ref$Name
 
 # Define new group sample list
-new_group_samples <- c('31.a.55_Heavy', 'AG2-G02')
+new_group_samples <- c('31.a.55_Heavy', '042-100809_2F04')
 print(new_group_samples)
 
 # Define file and column names
