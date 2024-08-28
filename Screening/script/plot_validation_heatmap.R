@@ -7,6 +7,8 @@ library(cowplot)
 
 # Function to create heatmaps
 create_heatmap <- function(df, colors, output_file, width, height) {
+
+  df$Antibody <- factor(df$Antibody, levels = df$Antibody)
   # Melt the data frame to long format
   df_long <- melt(df, id.vars = "Antibody", variable.name = "Measurement", value.name = "Value")
   
