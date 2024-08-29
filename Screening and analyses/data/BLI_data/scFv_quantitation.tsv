@@ -1,0 +1,24 @@
+Sample ID	Type	Binding Rate	Known Conc.	Well Conc.
+A1	Unknown	0.00276		0.4972
+A2	Unknown	0.02554		2.69757
+A3	Unknown	0.00476		0.68992
+A4	Unknown	0.02772		2.90833
+A5	Unknown	0.02942		3.07255
+B1	Unknown	0.00411		0.62699
+B2	Unknown	0.01101		1.29439
+B3	Unknown	0.00856		1.05691
+B4	Unknown	0.00073		0.30054
+B5	Unknown	0.00205		0.42883
+B6	Unknown	0.001		0.32647
+A1	Standard	0.06175	6.25	6.19642
+B1	Standard	0.0306	3.13	3.18731
+C1	Standard	0.01405	1.56	1.58774
+D1	Standard	0.00473	0.78	0.68757
+E1	Standard	0.00143	0.39	0.36811
+F1	Standard	4e-05	0.195	0.0
+A2	Standard	0.06217	6.25	6.23686
+B2	Standard	0.03129	3.13	3.25316
+C2	Standard	0.01314	1.56	1.50022
+D2	Standard	0.00473	0.78	0.68745
+E2	Standard	0.00177	0.39	0.40111
+F2	Standard	0.0003	0.195	0.25942
