@@ -3,7 +3,6 @@ This README describe the design and analyses in manuscript: Rapid synthesis and 
 
 oPool<sup>+</sup> display combines oligo pool synthesis and mRNA display to construct and characterize the specificity of many natively paired antibodies in parallel. As a proof-of-concept, we applied oPool<sup>+</sup> display to rapidly screen the binding activity of >300 previously uncharacterized influenza hemagglutinin (HA) antibodies against the conserved HA stem domain
 
-Raw input table can be download from the [Yiquan Wang, et al; 2023](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10515799/) which is `data/TableS1.xlsx`
 
 ## Environment set up 
 
