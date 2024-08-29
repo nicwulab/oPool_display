@@ -1,4 +1,4 @@
-# oPool<sup>+</sup> display: a rapid and cost effective *in vitro* natively paired antibody screening platform
+# oPool<sup>+</sup> display: a rapid and cost effective *in vitro*  screening platform for natively paired antibodies
 This README describe the design and analyses in manuscript: Rapid synthesis and screening of natively paired antibodies against influenza hemagglutinin stem using oPool<sup>+</sup> display.
 
 ## Contents
@@ -11,7 +11,7 @@ This README describe the design and analyses in manuscript: Rapid synthesis and 
 ## Introduction
 oPool<sup>+</sup> display combines oligo pool synthesis and mRNA display to construct and characterize the specificity of many natively paired antibodies in parallel. As a proof-of-concept, we applied oPool<sup>+</sup> display to rapidly screen the binding activity of >300 previously uncharacterized influenza hemagglutinin (HA) antibodies against the conserved HA stem domain. This repository, therefore, contains two parts: 1. the oligo sequence desgins for library assmebly and 2. the screening result and analyses.
 
-## Environment set up 
+## Environment setup 
 Create the same working environment:
 ```bash
 conda env create -f environment.yml
