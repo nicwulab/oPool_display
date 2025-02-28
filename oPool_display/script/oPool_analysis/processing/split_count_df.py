@@ -1,15 +1,16 @@
 import pandas as pd
 
 
-input_file = 'oPool_result/202412_mut_aa_count.tsv'  
+input_file = 'oPool_result/202412_mut_nuc_count.tsv'  
 df = pd.read_csv(input_file, sep='\t')
 
 file_names_df = pd.read_csv('ref_files/202412_sample_name.tsv', sep='\t')
 file_names_dict = file_names_df.set_index('sample_ID')['sample_name'].to_dict()
 
 subset_columns = {
-    'Full_HA_CR9114_competition': ['muts'] + [str(i) for i in range(1, 15)],  
+    'Full_HA_CR9114_compitition': ['muts'] + [str(i) for i in range(1, 15)],  
     'Full_HA': ['muts'] + [str(i) for i in range(15, 31)], 
+    'HA_stem': ['muts'] + [str(i) for i in range(47, 53)],
     'Assembly_25': ['muts'] + ['31', '37'], 
     'Assembly_50': ['muts'] + ['32', '38'], 
     'Assembly_75': ['muts'] + ['33', '39'], 

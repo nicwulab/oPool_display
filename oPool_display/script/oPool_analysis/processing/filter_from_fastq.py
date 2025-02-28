@@ -61,7 +61,7 @@ def extract_and_filter_sequences(input_fastq_path, quality_threshold=40, max_low
                 bad_quality_count += 1
                 continue
 
-            # Write to uncompressed FASTQ file
+            
             output_fastq.write(f"{seq_id}\n{trimmed_sequence}\n{qual_id}\n{trimmed_quality_scores}\n")
             good_count += 1
 
@@ -71,9 +71,9 @@ def extract_and_filter_sequences(input_fastq_path, quality_threshold=40, max_low
     print('Not found count: ', not_found_count)
 
 
-# Example usage:
-input_fastq_list = glob.glob('fastq/demux_fastq/*.fastq.gz')  # Replace with your FASTQ.gz file path
 
-# Process all files
+input_fastq_list = glob.glob('fastq/demux_fastq/*.fastq.gz') 
+
+
 for input_fastq_path in input_fastq_list:
     extract_and_filter_sequences(input_fastq_path)

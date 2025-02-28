@@ -1,71 +1,123 @@
-# Screening results and data analyses
+# oPool<sup>+</sup> display results and experimental data
+
+## Introduction
+This folder contains the scripts for oPool<sup>+</sup> display screen result/experimental data processing, analysis, and plotting.
+
+## Folders
+* [./experimental_data](./experimental_data): Experimental data of oPool<sup>+</sup> display validation and functional charaterizations
+* [./graph](./graph): All plots generated in this study
+* [./oPool_results](./oPool_results): Processed screening data and final results
+* [./ref_files](./ref_files): Reference files used in this study
+* [./script](./script): All custom scripts used in this study
+
+# Step-by-step breakdown of oPool<sup>+</sup> display analysis
+
+## Note
+All scripts were executed at oPool_display/oPool_display/ level.
 
 ## Input files
 * [./ref_files/300lib_Abs.csv](./ref_files/300lib_Abs.csv): Table S1, information of selected antibodies
-* [./ref_files/300lib.tsv](./ref_files/300lib.tsv): Reference sequences of the natively paired antibody design
-* [./ref_files/neg_abs_list.tsv](./ref_files/neg_abs_list.tsv): List of the 25 HA head antibodies (negative controls)
-* [./ref_files/sample_name.tsv](./ref_files/sample_name.tsv): Sample names of PacBio sequencing files
+* [./ref_files/lib_ref.tsv](./ref_files/300lib.tsv): Reference sequences of the natively paired antibody design
+* [./ref_files/neg_abs_list.tsv](./ref_files/neg_abs_list.tsv): List of the 30 HA head antibodies (negative controls)
+* [./ref_files/202412_sample_name.tsv](./ref_files/202412_sample_name.tsv): Sample names of PacBio sequencing files
 * Raw read (PacBio CCS) files in fastq format from NIH SRA database [BioProject PRJNA1150188](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1150188)
-* [./data](./data/): Experimental data (validation, structural & functional characterization)
+* [./experimental_data/](./experimental_data/): Experimental data (validation, structural & functional characterization)
 
-## Analyses of mRNA display results
+## Analysis of mRNA display results
 
 ### Data preparation
+(Before processing, adjust the file name of H1 and H3 stem screens according to the sample names table)
 1. Filter the CCS reads based on quality and ROI, then trim the adaptors   
 ``python3 script/filter_from_fastq.py``
     - Input files: PacBio CCS reads
     - Output files will be placed in a folder named fastq_filtered/
 
 ### Counting reads, identify scFvs, and calculate enrichment for both replicates
-2. Counting unique reads, rename samples
-``python3 script/fastq2count.py``   
+1. Counting unique reads, rename samples
+``python3 script/oPool_analysis/processing/fastq2count.py``   
     - Input files:
       - Merged read files in fastq_merged/ folder
-      - [./ref_files/sample_name.tsv](./ref_files/sample_name.tsv)
+      - [./ref_files/202412_sample_name.tsv](./ref_files/202412_sample_name.tsv)   
     - Output files:
-      - [./result/PacBio/mut_nuc_count.tsv](./result/PacBio/mut_nuc_count.tsv)
+      - [./oPool_result/processing/202412_mut_nuc_count.tsv](./oPool_result/processing/202412_mut_nuc_count)
 
-3. Identify natively paired scFvs with no mutations, then calculate frequncy and enrichment
-``python3 script/identify_scfv_300lib.py``   
+``python3 script/oPool_analysis/processing/split_count_df.py``
     - Input files:
-      - [./result/PacBio/mut_nuc_count.tsv](./result/PacBio/mut_nuc_count.tsv)
-      - [./ref_files/300lib_Abs.csv](./ref_files/300lib_Abs.csv)
-      - [./ref_files/300lib.tsv](./ref_files/300lib.tsv)
+      - [./oPool_result/processing/202412_mut_nuc_count.tsv](./oPool_result/processing/202412_mut_nuc_count)
     - Output files:
-      - [./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv](./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv)
-      - [./result/PacBio/oPool_screen_enrichment.tsv](./result/PacBio/oPool_screen_enrichment.tsv)
+      - split count files for different experiments
+
+2. Identify natively paired scFvs with no mutations, then calculate frequncy and enrichment
+``python3 script/oPool_analysis/processing/identify_scfv_300lib.py``   
+    - Input files:
+      - [./oPool_result/nuc_count_files/HA_stem.tsv](./oPool_result/nuc_count_files/HA_stem.tsv) 
+      - [./oPool_result/nuc_count_files/Full_HA.tsv](./oPool_result/nuc_count_files/Full_HA.tsv)       
+      - [./oPool_result/nuc_count_files/Full_HA_CR9114_competition.tsv](./oPool_result/nuc_count_files/Full_HA_CR9114_competition.tsv)
+      - [./ref_files/lib_ref.csv](./ref_files/lib_ref.csv)
+    - Output files: 
+      - [./oPool_result/enrichment/HA_stem_enrich.tsv](./oPool_result/enrichment/HA_stem_enrich.tsv) 
+      - [./oPool_result/enrichment/Full_HA_enrich.tsv](./oPool_result/enrichment/Full_HA_enrich.tsv)       
+      - [./oPool_result/enrichment/Full_HA_CR9114_competition_enrich.tsv](./oPool_result/enrichment/Full_HA_CR9114_competition.tsv)    
 
 ### Assembly assessment
-4. Plot scFv frequency correlation between two assembly replicates
+1. Plot scFv frequency correlation between two assembly replicates
 ``Rscript script/plot_QC_input.R``   
     - Input files:
       - [./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv](./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv)
     - Output files:
       - [./graph/input_QC.png](./graph/input_QC.png)
 
-### Screening result analyses
-5. Plot H1 stem screen correlation between replicates
-``Rscript script/plot_QC_H1_screen.R``   
+### Screening result assessment
+1. Plot scFv enrichment correlation between two replicates for each screen
+``Rscript script/oPool_analysis/QC/plot_QC_H1_screen.R`` 
+``Rscript script/oPool_analysis/QC/plot_QC_H3_screen.R`` 
+``Rscript script/oPool_analysis/QC/plot_QC_H1_H3.R`` 
+``Rscript script/oPool_analysis/QC/plot_QC_Full_HAs.R`` 
+``Rscript script/oPool_analysis/QC/plot_QC_Full_HA_wCompetition.R``
     - Input files:
-      - [./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv](./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv)
+      - [./oPool_result/enrichment/HA_stem_enrich.tsv](./oPool_result/enrichment/HA_stem_enrich.tsv) 
+      - [./oPool_result/enrichment/Full_HA_enrich.tsv](./oPool_result/enrichment/Full_HA_enrich.tsv)       
+      - [./oPool_result/enrichment/Full_HA_CR9114_competition_enrich.tsv](./oPool_result/enrichment/Full_HA_CR9114_competition.tsv)   
     - Output files:
-      - [./graph/H1_screen_correlation.png](./graph/H1_screen_correlation.png)
+      - Correlation plots in graph/oPool_analysis/QC     
 
-6. Plot H3 stem screen correlation between replicates
-``Rscript script/plot_QC_H3_screen.R``   
+### Screening results
+1. Plot binding score heatmap
+``Rscript script/oPool_analysis/result_analysis/plot_heatmap.R``
     - Input files:
-      - [./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv](./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv)
+      - [./oPool_result/enrichment/Full_HA_enrich.tsv](./oPool_result/enrichment/Full_HA_enrich.tsv)
+      - [./oPool_result/enrichment/Full_HA_CR9114_competition_enrich.tsv](./oPool_result/enrichment/Full_HA_CR9114_competition_enrich.tsv)  
+      - [./oPool_result/enrichment/HA_stem_enrich.tsv](./oPool_result/enrichment/HA_stem_enrich.tsv)
     - Output files:
-      - [./graph/H3_screen_correlation.png](./graph/H3_screen_correlation.png)
+       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_1.tsv)     
+       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_2.tsv)   
+       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_3.tsv)   
+       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_4.tsv)  
+       - [./graph/oPool_heatmap.png](./graph/oPool_heatmap.png)  
 
-7. Plot H1 stem screen enrichment vs. H1 stem screen enrichment 
-``Rscript script/plot_QC_H1_H3.R``   
+2. Cutoff based filtering
+``Rscript script/oPool_analysis/result_analysis/cutoff_based_filtering.R``
     - Input files:
-      - [./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv](./result/PacBio/oPool_screen_counts_freq_and_enrichment.tsv)
+      - [./oPool_result/enrichment/combined_enrichment.tsv](./oPool_result/enrichment/combined_enrichment.tsv)
     - Output files:
-      - [./graph/H1_vs_H3.png](./graph/H1_vs_H3.png)
+      - filtered antibody hits for each antigen in oPool_result/filtered_hits
 
-## Analyses of experimental validation results
+3. Compile the final results table (Table S4)
+``python3 script/oPool_analysis/result_analysis/antibody_profiling.R``       
+    - Input files:
+      - [./oPool_result/enrichment/combined_enrichment.tsv](./oPool_result/enrichment/combined_enrichment.tsv)
+    - Output files:
+      - [./oPool_result/filtered_hits/unique_antibodies_info.tsv](./oPool_result/filtered_hits/unique_antibodies_info.tsv)
+
+4. Plot competition indices
+``Rscript script/oPool_analysis/result_analysis/plot_competition_index.R``
+    - Input files:
+      - filtered antibody hits for each antigen in oPool_result/filtered_hits
+    - Output files:
+      - competition index bar plots in graph/oPool_analysis/competition
+      - [./oPool_result/enrichment/competition_index.tsv](./oPool_result/enrichment/competition_index.tsv)
+
+## Analysis of experimental validation results
 
 ### Hits validation via BLI
 1. Plot quantitation data

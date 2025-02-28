@@ -51,9 +51,9 @@ plot_enrichment_heatmap <- function(data, legend_title, color_limits, y_labels, 
 }
 
 # Load and preprocess datasets
-data1 <- read_tsv("oPool_result/enrichment/202412_300lib_screen_Full_HA.tsv")
-data2 <- read_tsv("oPool_result/enrichment/202404_300lib_screen_H1_H3_stem.tsv")
-data3 <- read_tsv("oPool_result/enrichment/202412_300lib_screen_Full_HA_CR9114_compitition.tsv")
+data1 <- read_tsv("oPool_result/enrichment/Full_HA_enrich.tsv")
+data2 <- read_tsv("oPool_result/enrichment/HA_stem_enrich.tsv")
+data3 <- read_tsv("oPool_result/enrichment/Full_HA_CR9114_competition_enrich.tsv")
 
 data1 <- data1 %>% rename(name = closest_abs)
 data2 <- data2 %>% rename(name = closest_abs)

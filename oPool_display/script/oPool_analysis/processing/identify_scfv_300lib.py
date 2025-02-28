@@ -83,8 +83,10 @@ def get_freq(df):
 def get_score(df, sample_name):
     if sample_name == "CR9114_compitition":
         antigen_list = ["SI06_H1", "MI15_H1", "QH_H5", "SH_H7", "Phu_FluB", "Lee_FluB"]
-    else:
+    if sample_name == "Full_HA":
         antigen_list = ["SI06_H1", "MI15_H1", "SP16_H3", "QH_H5", "SH_H7", "Phu_FluB", "Lee_FluB"]
+    if sample_name == "Stem":
+        antigen_list = ["H1_stem", "H3_stem"]
 
     for antigen in antigen_list:
         df[sample_name + '_' + antigen + '_Rep1_enrich'] = df[sample_name + '_' + antigen + '_Rep1_freq'] / df[sample_name + '_input_Rep1_freq'] 
@@ -95,8 +97,10 @@ def get_score(df, sample_name):
 def get_avg_score(df, sample_name):
     if sample_name == "CR9114_compitition":
         antigen_list = ["SI06_H1", "MI15_H1", "QH_H5", "SH_H7", "Phu_FluB", "Lee_FluB"]
-    else:
+    if sample_name == "Full_HA":
         antigen_list = ["SI06_H1", "MI15_H1", "SP16_H3", "QH_H5", "SH_H7", "Phu_FluB", "Lee_FluB"]
+    if sample_name == "Stem":
+        antigen_list = ["H1_stem", "H3_stem"]
     
     for antigen in antigen_list:
         df[sample_name + '_' + antigen +'_avg_enrich'] = (df[sample_name + '_' + antigen + '_Rep1_enrich']+ df[sample_name + '_' + antigen + '_Rep2_enrich'])/2
@@ -129,10 +133,12 @@ def process_count_data(infile, ref_file, outfile, num_processes, chunk_size, sam
 def main():
     start_time = time.time()
     ref_file = 'ref_files/lib_ref.csv'
-    outfile_1 = "oPool_result/enrichment/202412_300lib_screen_Full_HA_CR9114_compitition.tsv"
+    outfile_1 = "oPool_result/enrichment/Full_HA_CR9114_compitition_enrich.tsv"
     infile_1 = 'oPool_result/nuc_count_files/Full_HA_CR9114_competition.tsv'
-    outfile_2 = "oPool_result/enrichment/202412_300lib_screen_Full_HA.tsv"
+    outfile_2 = "oPool_result/enrichment/Full_HA_enrich.tsv"
     infile_2 = 'oPool_result/nuc_count_files/Full_HA.tsv'
+    outfile_3 = 'oPool_result/nuc_count_files/HA_stem_enrich.tsv'
+    infile_3 = 'oPool_result/nuc_count_files/HA_stem.tsv'
    
     process_count_data(infile_1, ref_file, outfile_1, 60, 1000, 'CR9114_compitition')
 
@@ -143,6 +149,10 @@ def main():
 
     total_time = time.time() - start_time
     print(f"Total processing time: {total_time:.2f} seconds")
+    
+    process_count_data(infile_3, ref_file, outfile_3, 60, 1000, 'Full_HA')
 
+    total_time = time.time() - start_time
+    print(f"Total processing time: {total_time:.2f} seconds")
 if __name__ == "__main__":
     main()

@@ -124,7 +124,7 @@ def process_file(fastq_file, file_names_dict):
 def main():
     start_time = time.time()
 
-    outfile = 'oPool_result/202412_mut_aa_count.tsv'
+    outfile = 'oPool_result/processing/nuc_count_files/202412_mut_nuc_count.tsv'
     fastq_list = glob.glob('fastq_filtered/*.fastq')
     file_names_df = pd.read_csv('ref_files/202412_sample_name.tsv', sep='\t')
     file_names_dict = file_names_df.set_index('sample_ID')['sample_name'].to_dict()
