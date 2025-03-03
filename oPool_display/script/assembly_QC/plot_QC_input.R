@@ -38,7 +38,7 @@ plot_filtered_dot <- function(infile, x_col, y_col, outfile, textsize = 8){
 
 
 # Example usage
-infile <- 'oPool_result/202404_300lib_screen_H1_H3_stem.tsv'
+infile <- 'oPool_result/enrichment/HA_stem_enrich.tsv'
 outfile <- 'graph/assembly_QC/input_QC.png'
 
-plot_filtered_dot(infile, 'Rep1_prescreen_lib_freq', 'Rep2_prescreen_lib_freq', outfile)
+plot_filtered_dot(infile, 'Stem_input_Rep1_freq', 'Stem_input_Rep2_freq', outfile)
