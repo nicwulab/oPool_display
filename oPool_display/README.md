@@ -19,7 +19,7 @@ This folder contains the scripts for oPool<sup>+</sup> display screen result/exp
 * [./script](./script): All custom scripts used in this study
 
 ## Note
-All scripts were executed at this level.
+All scripts were executed at this level. chatGPT 4o was used to assist with the writing of some scripts.
 
 ## Input files
 * [./ref_files/300lib_Abs.csv](./ref_files/300lib_Abs.csv): Table S1, information of selected antibodies
