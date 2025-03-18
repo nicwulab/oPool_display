@@ -50,7 +50,7 @@ plot_heatmap <- function(differences, output_file, legend_title = "Response\n(nm
       colours = gradient_colors,
       limits = c(-0.05, 1),
       breaks = c(0, 0.5, 1),
-      labels = c("<0", "0.5", ">1"),
+      labels = c("0", "0.5", ">1"),
       na.value = "white",
       guide = guide_colorbar(
         title = legend_title,
@@ -108,7 +108,7 @@ process_metadata_with_heatmap <- function(metadata_file, output_folder) {
   for (i in 1:nrow(metadata)) {
     antibody <- metadata$antibody[i]
     antigen <- metadata$antigen[i]
-    data_file <- paste0("result/", metadata$data_file[i])
+    data_file <- metadata$data_file[i]
     
     raw_data <- read.table(
       data_file,

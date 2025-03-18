@@ -82,7 +82,7 @@ process_metadata <- function(metadata_file, output_folder, color_map) {
   for (i in seq_len(nrow(metadata))) {
     antibody <- metadata$antibody[i]
     antigen <- metadata$antigen[i]
-    data_file <- file.path("result", metadata$data_file[i])
+    data_file <- file.path(metadata$data_file[i])
 
     # Read and process data
     raw_data <- read.table(
