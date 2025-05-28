@@ -13,9 +13,9 @@ library(cowplot)
 # Create a data frame with the provided values
 df_new <- data.frame(
   Antigen = c("H1/PR8", "H1/CH83", "H1/BJ95",
-              "H1/BR07", "H1/CA09", "H1/MI15"),
-  `AG11-2F01` = c(25, 18.75, 12.5, 12.5, 50, 6.25),
-  `16.ND.92` = c(75, 75, 25, 25, 50, 50),
+              "H1/BR07", "H1/CA09", "H1/MI15","H5/FL22"),
+  `AG11-2F01` = c(25, 18.75, 12.5, 12.5, 50, 6.25, 1),
+  `16.ND.92` = c(75, 75, 25, 25, 50, 50, 8.035),
   check.names = FALSE
 )
 
@@ -25,7 +25,7 @@ df_new_long <- melt(df_new, id.vars = "Antigen", variable.name = "Sample", value
 # Ensure the correct order of factors for the y-axis
 df_new_long$Sample <- factor(df_new_long$Sample, levels = c("16.ND.92","AG11-2F01"))
 df_new_long$Antigen <- factor(df_new_long$Antigen, levels = c("H1/PR8", "H1/CH83", "H1/BJ95",
-              "H1/BR07", "H1/CA09", "H1/MI15"))
+              "H1/BR07", "H1/CA09", "H1/MI15","H5/FL22"))
 
 # Generate the heat map with updated theme settings
 heatmap_plot_new <- ggplot(df_new_long, aes(x = Antigen, y = Sample, fill = Concentration)) +
@@ -58,4 +58,4 @@ heatmap_plot_new <- ggplot(df_new_long, aes(x = Antigen, y = Sample, fill = Conc
 print(heatmap_plot_new)
 
 # Save the heat map with smaller boxes
-ggsave("graph/IC50_heatmap.png", plot = heatmap_plot_new, width = 2.7, height = 3)
+ggsave("graph/functional_charaterization/IC50_heatmap.png", plot = heatmap_plot_new, width = 2.8, height = 3)
