@@ -27,6 +27,12 @@ plot_heatmap <- function(differences, output_file, legend_title = "Response\n(nm
     mutate(Difference = as.numeric(Difference)) %>%
     filter(!is.na(Difference))
   
+  differences_df <- bind_rows(differences)
+
+  # Save the data table used for plotting
+  data_table_file <- file.path("experimental_data/validation/BLI/BLI_binding_response_table.tsv")
+  readr::write_tsv(differences_df, data_table_file)
+  
   heatmap_data <- differences %>%
     pivot_wider(names_from = Antibody, values_from = Difference, values_fill = NA)
   
@@ -157,7 +163,7 @@ process_metadata_with_heatmap <- function(metadata_file, output_folder) {
     "150055-015-1D02" = c("B/Lee40")
   )
   
-  # Convert list to data frame for overlay dots
+
   overlay_dots <- bind_rows(lapply(names(dot_tiles), function(antibody) {
     data.frame(Antibody = antibody, Antigen = dot_tiles[[antibody]])
   }))
@@ -166,7 +172,7 @@ process_metadata_with_heatmap <- function(metadata_file, output_folder) {
   plot_heatmap(differences_df, heatmap_file, overlay_dots = overlay_dots)
 }
 
-# Example usage
+
 metadata_file <- "experimental_data/validation/BLI/oPool_binding_validation/oPool_validation_sample_names.xlsx"
 output_folder <- "graph/validation/BLI/oPool_binding_validation"
 process_metadata_with_heatmap(metadata_file, output_folder)
