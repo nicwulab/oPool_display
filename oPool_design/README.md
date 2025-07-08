@@ -11,15 +11,17 @@ After following the instruction, you should have the `pyir` database in the `cro
 <pre>
 Arguments related to file paths:
   --igdata IGDATA       Path to your IGDATA directory. Default is /data/home/w
-                          enkanl2/miniconda3/envs/Abs/lib/python3.9/site-
-                                                  packages/crowelab_pyir/data/germlines
+                        enkanl2/miniconda3/envs/Abs/lib/python3.9/site-
+                        packages/crowelab_pyir/data/germlines
 </pre>
 
+So, in my case, the absolute path of `-g` should be `/data/home/wenkanl2/miniconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human`
 
-- `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g $loc/crowelab_pyir/data/germlines/Ig/human -o result/2024_0228_filtered.csv`
+
+- `python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g ${pyir_db}/Ig/human -o result/2024_0228_filtered.csv`
     - `-i`: input table from the paper
-    - `-v`: filtering list. We remove the sequences from common families.
-    - `-d`: 
+    - `-v`: filtering list. We remove the sequences from the family you give.(Exp: IGHV1-69)
+    - `-d`: similar as `-v`, but for D gene family.
     - `-g`: human IG sequences database from pyir for head and tail completion.
     - `-o`: output results. After filtering, there were 303 sequences left.
 
