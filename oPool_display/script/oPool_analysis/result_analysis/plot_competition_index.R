@@ -29,7 +29,7 @@ plot_heights_filtered <- list(
 
 # Y-axis limits
 y_axis_limits <- list(
-  "SI06_H1" = c(-1.5, 1.5), "MI15_H1" = c(-2.0, 2.0), "QH_H5" = c(-1, 1),
+  "SI06_H1" = c(-1.5, 1.5), "MI15_H1" = c(-2.0, 2.0), "QH_H5" = c(-2, 2),
   "SH_H7" = c(-1.5, 1.5), "Phu_FluB" = c(-1.5, 1.5), "Lee_FluB" = c(-1.5, 1.5)
 )
 
