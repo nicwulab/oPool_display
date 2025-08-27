@@ -12,7 +12,7 @@
 This folder contains the scripts for oPool<sup>+</sup> display screen result/experimental data processing, analysis, and plotting.
 
 ## Folders
-* [./experimental_data](./experimental_data): Experimental data of oPool<sup>+</sup> display validation and functional charaterizations
+* [./experimental_data](./experimental_data): Experimental data of oPool<sup>+</sup> display validation and functional characterizations
 * [./graph](./graph): All plots generated in this study
 * [./oPool_result](./oPool_result): Processed screening data and final results
 * [./ref_files](./ref_files): Reference files used in this study
@@ -46,15 +46,15 @@ All scripts were executed at this level.
       - Merged read files in fastq_merged/ folder
       - [./ref_files/202412_sample_name.tsv](./ref_files/202412_sample_name.tsv)   
     - Output files:
-      - [./oPool_result/processing/202412_mut_nuc_count.tsv](./oPool_result/processing/202412_mut_nuc_count)
+      - [./oPool_result/processing/202412_mut_nuc_count.tsv](./oPool_result/processing/202412_mut_nuc_count.tsv)
 
 ``python3 script/oPool_analysis/processing/split_count_df.py``
     - Input files:
-      - [./oPool_result/processing/202412_mut_nuc_count.tsv](./oPool_result/processing/202412_mut_nuc_count)
+      - [./oPool_result/processing/202412_mut_nuc_count.tsv](./oPool_result/processing/202412_mut_nuc_count.tsv)
     - Output files:
       - split count files for different experiments
 
-2. Identify natively paired scFvs with no mutations, then calculate frequncy and enrichment
+2. Identify natively paired scFvs with no mutations, then calculate frequency and enrichment
 ``python3 script/oPool_analysis/processing/identify_scfv_300lib.py``   
     - Input files:
       - [./oPool_result/nuc_count_files/HA_stem.tsv](./oPool_result/nuc_count_files/HA_stem.tsv) 
@@ -72,14 +72,14 @@ All scripts were executed at this level.
     - Input files:
       - [./oPool_result/nuc_count_files/Assembly_*.tsv] read count files for each assembly
     - Output files:
-      - [./oPool_result/assembly_QC/freq](oPool_result/assembly_QC/freq) frequency tables for each assembly
+      - [./oPool_result/assembly_QC/freq](./oPool_result/assembly_QC/freq) frequency tables for each assembly
 
 2. Plot scFv frequency correlation between each assembly replicates
 ``Rscript script/assembly_QC/plot_small_pool_pcr_freq.R`` 
     - Input files:
-      - [./oPool_result/assembly_QC/freq](oPool_result/assembly_QC/freq) frequency tables for each assembly
+      - [./oPool_result/assembly_QC/freq](./oPool_result/assembly_QC/freq) frequency tables for each assembly
     - Output files:
-      - [./graph/assembly_QC](oPool_result/assembly_QC) frequency correlation plots for each assmebly, Figure 1E
+      - [./graph/assembly_QC](./graph/assembly_QC) frequency correlation plots for each assembly, Figure 1E
 
 3. Plot scFv frequency correlation between final library replicates
 ``Rscript script/assembly_QC/plot_QC_input.R``   
@@ -112,9 +112,9 @@ All scripts were executed at this level.
       - [./oPool_result/enrichment/HA_stem_enrich.tsv](./oPool_result/enrichment/HA_stem_enrich.tsv)
     - Output files:
        - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_1.tsv)     
-       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_2.tsv)   
-       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_3.tsv)   
-       - [./oPool_result/enrichment/table_s3_1.tsv](./oPool_result/enrichment/table_s3_4.tsv)  
+       - [./oPool_result/enrichment/table_s3_2.tsv](./oPool_result/enrichment/table_s3_2.tsv)   
+       - [./oPool_result/enrichment/table_s3_3.tsv](./oPool_result/enrichment/table_s3_3.tsv)   
+       - [./oPool_result/enrichment/table_s3_4.tsv](./oPool_result/enrichment/table_s3_4.tsv)  
        - [./graph/oPool_heatmap.png](./graph/oPool_heatmap.png): Figure 2
 
 2. Cutoff based filtering
@@ -143,7 +143,7 @@ All scripts were executed at this level.
 
 ### Binding validation via BLI
 1. Plot BLI binding validation sensorgrams
-``Rscript script/Validation/BLI/plot_oPool_binding_validation.R``  
+``Rscript script/validation/BLI/plot_oPool_binding_validation.R``  
     - Input files:
       - [./experimental_data/validation/BLI/oPool_binding_validation](./experimental_data/validation/BLI/oPool_binding_validation):raw data
       - [./experimental_data/validation/BLI/oPool_binding_validation/oPool_validation_sample_names.xlsx](./experimental_data/validation/BLI/oPool_binding_validation/oPool_validation_sample_names.xlsx):Sample info for each file.
@@ -151,7 +151,7 @@ All scripts were executed at this level.
       - [./graph/validation/BLI/oPool_binding_validation](./graph/validation/BLI/oPool_binding_validation): sensorgrams by antibody
 
 2. Plot BLI binding validation heatmaps
-``Rscript script/Validation/BLI/plot_oPool_binding_validation_heatmap.R``
+``Rscript script/validation/BLI/plot_oPool_binding_validation_heatmap.R``
     - Input files:
       - [./experimental_data/validation/BLI/oPool_binding_validation](./experimental_data/validation/BLI/oPool_binding_validation):raw data
       - [./experimental_data/validation/BLI/oPool_binding_validation/oPool_validation_sample_names.xlsx](./experimental_data/validation/BLI/oPool_binding_validation/oPool_validation_sample_names.xlsx):Sample info for each file.
@@ -164,22 +164,22 @@ All scripts were executed at this level.
     - Input files:
       - [./experimental_data/validation/ELISA/ELISA_Validation_Results.xlsx](./experimental_data/validation/ELISA/ELISA_Validation_Results.xlsx): OD450 data
     - Output files:
-      - [./graph/valiation/ELISA/oPool_validation_heatmap_ELISA.png](./graph/valiation/ELISA/oPool_validation_heatmap_ELISA.png): Figure 3B
+      - [./graph/validation/ELISA/oPool_validation_heatmap_ELISA.png](./graph/validation/ELISA/oPool_validation_heatmap_ELISA.png): Figure 3B
 
 ### K<sub>D<sub> measurement via BLI
 1. Compile BLI Kd raw data for plotting
 ``python3 script/validation/BLI/compile_BLI_result_batch.py``
     - Input files:
-      - [./result/experimental_data/validation/BLI/Kd_measurements](./result/experimental_data/validation/BLI/Kd_measurements):raw data
+      - [./oPool_result/experimental_data/validation/BLI/Kd_measurements](./oPool_result/experimental_data/validation/BLI/Kd_measurements):raw data
     - Output files:
-      - [./result/experimental_data/validation/BLI/Kd_compile](./result/experimental_data/validation/BLI/Kd_compile): compiled data
+      - [./oPool_result/experimental_data/validation/BLI/Kd_compile](./oPool_result/experimental_data/validation/BLI/Kd_compile): compiled data
 
 2. Plot kinetics data
-``Rscript script/Validation/BLI/plot_BLI_binding_batch.R``   
+``Rscript script/validation/BLI/plot_BLI_binding_batch.R``   
     - Input files:
-      - [./result/experimental_data/validation/BLI/Kd_compile](./result/experimental_data/validation/BLI/Kd_compile): compiled data
+      - [./oPool_result/experimental_data/validation/BLI/Kd_compile](./oPool_result/experimental_data/validation/BLI/Kd_compile): compiled data
     - Output files:
-      - [./graph/valiation/BLI/Kd_sensorgram](./graph/valiation/BLI/Kd_sensorgram): all sensorgrams for kinetic measurements
+      - [./graph/validation/BLI/Kd_sensorgram](./graph/validation/BLI/Kd_sensorgram): all sensorgrams for kinetic measurements
 
 3. Plot Kd heatmap
 ``Rscript script/validation/BLI/plot_Kd_heatmap.R``   
@@ -189,16 +189,16 @@ All scripts were executed at this level.
 
 ### Competition validation via BLI
 1. Plot competition results
-``Rscript script/validation/BLI/plot_compititon_validation.R``
+``Rscript script/validation/BLI/plot_competition_validation.R``
     - Input files:
       - [./experimental_data/validation/BLI/oPool_competition_validation/oPool_competition_validation_sample_names.xlsx](./experimental_data/validation/BLI/oPool_competition_validation/oPool_competition_validation_sample_names.xlsx): Sample info for each file
       - [./experimental_data/validation/BLI/oPool_competition_validation/](./experimental_data/validation/BLI/oPool_competition_validation/) raw data
     - Output files:
-      - [./graph/valiation/BLI/oPool_competition_validation](./graph/valiation/BLI/Kd_sensorgram): all sensorgrams for competition validation
+      - [./graph/validation/BLI/oPool_competition_validation](./graph/validation/BLI/oPool_competition_validation): all sensorgrams for competition validation
       - [./experimental_data/validation/BLI/validated_antibody_competition_percentage.tsv](./experimental_data/validation/BLI/validated_antibody_competition_percentage.tsv)
 
 2. Plot competition correlation
-``Rscript script/validation/BLI/plot_compititon_correlation.R``
+``Rscript script/validation/BLI/plot_competition_correlation.R``
     - Input files:
       - [./oPool_result/enrichment/competition_index.tsv](./oPool_result/enrichment/competition_index.tsv)    
       - [./experimental_data/validation/BLI/validated_antibody_competition_percentage.tsv](./experimental_data/validation/BLI/validated_antibody_competition_percentage.tsv)
@@ -276,7 +276,7 @@ All scripts were executed at this level.
 8. Plot ELISA result heatmap
 ``Rscript script/functional_characterization/plot_EC50.R``   
     - Output files:
-      - [./graph/functional_characterization/ELISA_EC50_heatmap.png](./graph/functional_characterization/ELISA_EC50_heatmap.png): Figure 6A
+      - [./graph/functional_characterization/elisa_ec50_heatmap.png](./graph/functional_characterization/elisa_ec50_heatmap.png): Figure 6A
 
 9. Plot micro-neutralization result heatmap
 ``Rscript script/functional_characterization/plot_IC50.R``   
@@ -286,9 +286,9 @@ All scripts were executed at this level.
 10. Plot in vivo experiment data
 ``Rscript script/functional_characterization/plot_in_vivo.R`` 
     - Input files:
-      - [./experimental_data/functional_analysis/invivo_weight_loss.tsv](./experimental_data/functional_analysis/invivo_weight_loss.tsv)
-      - [./experimental_data/functional_analysis/invivo_survival.tsv](./experimental_data/functional_analysis/invivo_survival.tsv)
-      - [./experimental_data/functional_analysis/invivo_lung_titer.tsv](./experimental_data/functional_analysis/invivo_lung_titer.tsv)
+      - [./experimental_data/functional_characterization/invivo_weight_loss.tsv](./experimental_data/functional_characterization/invivo_weight_loss.tsv)
+      - [./experimental_data/functional_characterization/invivo_survival.tsv](./experimental_data/functional_characterization/invivo_survival.tsv)
+      - [./experimental_data/functional_characterization/invivo_lung_titer.tsv](./experimental_data/functional_characterization/invivo_lung_titer.tsv)
     - Output files:
       - [./graph/functional_characterization/invivo_weight_loss_2F01.png](./graph/functional_characterization/invivo_weight_loss_2F01.png): Figure 6C
       - [./graph/functional_characterization/invivo_weight_loss_16ND92.png](./graph/functional_characterization/invivo_weight_loss_16ND92.png): Figure 6D
