@@ -6,7 +6,7 @@
 - [Input files](#Input-files)
 - [Analysis of oPool<sup>+</sup> display results](#Analysis-of-oPool<sup>+</sup>-display-results)
 - [Analysis of experimental validation results](#Analysis-of-experimental-validation-results)
-- [Characterization of AG11-2F01 and 16.ND.92](#Characterization-of-AG11-2F01-and-16.ND.92)
+- [Characterization of AG11-2F01 (PDB ID 9DBX) and 16.ND.92 (PDB ID 9CU7)](#Characterization-of-AG11-2F01-and-16.ND.92)
 
 ## Introduction
 This folder contains the scripts for oPool<sup>+</sup> display screen result/experimental data processing, analysis, and plotting.
@@ -23,16 +23,17 @@ All scripts were executed at this level.
 
 ## Input files
 * [./ref_files/300lib_Abs.tsv](./ref_files/300lib_Abs.tsv): Table S1, information of selected antibodies
-* [./ref_files/lib_ref.tsv](./ref_files/lib_ref.tsv): Reference sequences of the natively paired antibody design
+* [./ref_files/lib_ref.csv](./ref_files/lib_ref.csv): Reference sequences of the natively paired antibody design
 * [./ref_files/neg_abs_list.tsv](./ref_files/neg_abs_list.tsv): List of the 30 HA head antibodies (negative controls)
 * [./ref_files/202412_sample_name.tsv](./ref_files/202412_sample_name.tsv): Sample names of PacBio sequencing files
 * Raw read (PacBio CCS) files in fastq format from NIH SRA database [BioProject PRJNA1150188](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1150188)
-* [./experimental_data/](./experimental_data/): Experimental data (validation, structural & functional characterization)
+* [./experimental_data](./experimental_data): Experimental data (validation, structural & functional characterization)
 
 ## Analysis of oPool<sup>+</sup> display results
 
 ### Data preparation
-(Before processing, adjust the numerical ID in the file name of H1 and H3 stem screens according to the sample names table)
+(Before processing, adjust the numerical ID in the sequencing file name of H1 and H3 stem screens according to the sample names table [./ref_files/202412_sample_name.tsv](./ref_files/202412_sample_name.tsv))
+
 1. Filter the CCS reads based on quality and ROI, then trim the adaptors   
 ``python3 script/oPool_analysis/processing/filter_from_fastq.py``
     - Input files: PacBio CCS reads
@@ -165,16 +166,16 @@ All scripts were executed at this level.
     - Output files:
       - [./graph/valiation/ELISA/oPool_validation_heatmap_ELISA.png](./graph/valiation/ELISA/oPool_validation_heatmap_ELISA.png): Figure 3B
 
-### Kd measurement via BLI
+### K<sub>D<sub> measurement via BLI
 1. Compile BLI Kd raw data for plotting
-``python3 script/validation/BLI/compile_BLI_result_batch.py`   
+``python3 script/validation/BLI/compile_BLI_result_batch.py``
     - Input files:
       - [./result/experimental_data/validation/BLI/Kd_measurements](./result/experimental_data/validation/BLI/Kd_measurements):raw data
     - Output files:
       - [./result/experimental_data/validation/BLI/Kd_compile](./result/experimental_data/validation/BLI/Kd_compile): compiled data
 
 2. Plot kinetics data
-``Rscript script/Validation/BLI/plot_BLI_binding_batch.R`   
+``Rscript script/Validation/BLI/plot_BLI_binding_batch.R``   
     - Input files:
       - [./result/experimental_data/validation/BLI/Kd_compile](./result/experimental_data/validation/BLI/Kd_compile): compiled data
     - Output files:
@@ -191,7 +192,7 @@ All scripts were executed at this level.
 ``Rscript script/validation/BLI/plot_compititon_validation.R``
     - Input files:
       - [./experimental_data/validation/BLI/oPool_competition_validation/oPool_competition_validation_sample_names.xlsx](./experimental_data/validation/BLI/oPool_competition_validation/oPool_competition_validation_sample_names.xlsx): Sample info for each file
-      - [./experimental_data/validation/BLI/oPool_competition_validation/] raw data
+      - [./experimental_data/validation/BLI/oPool_competition_validation/](./experimental_data/validation/BLI/oPool_competition_validation/) raw data
     - Output files:
       - [./graph/valiation/BLI/oPool_competition_validation](./graph/valiation/BLI/Kd_sensorgram): all sensorgrams for competition validation
       - [./experimental_data/validation/BLI/validated_antibody_competition_percentage.tsv](./experimental_data/validation/BLI/validated_antibody_competition_percentage.tsv)
@@ -208,7 +209,7 @@ All scripts were executed at this level.
 
 ### Structural analyses 
 1. Plot structure overviews of AG11-2F01 and 16.ND.92
-``pymol script/structural_analysis/overview.pml`   
+``pymol script/structural_analysis/overview.pml``   
     - Input files:
       - [./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb](./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb)
       - [./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb](./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb)
@@ -217,7 +218,7 @@ All scripts were executed at this level.
       - [./graph/structural_analysis/PDB/16ND_overview.png](./graph/structural_analysis/PDB/16ND_overview.png): Figure 5A 
 
 2. Plot epitopes of AG11-2F01 and 16.ND.92
-``pymol script/structural_analysis/epitope.pml`   
+``pymol script/structural_analysis/epitope.pml``   
     - Input files:
       - [./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb](./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb)
       - [./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb](./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb)
@@ -226,7 +227,7 @@ All scripts were executed at this level.
       - [./graph/structural_analysis/PDB/16ND_epitope.png](./graph/structural_analysis/PDB/16ND_epitope.png): Figure 5B
 
 3. Plot CDRH3 interactions of AG11-2F01 and 16.ND.92
-``pymol script/structural_analysis/interact_CDRH3.pml`   
+``pymol script/structural_analysis/interact_CDRH3.pml``   
     - Input files:
       - [./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb](./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb)
       - [./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb](./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb)
@@ -235,7 +236,7 @@ All scripts were executed at this level.
       - [./graph/structural_analysis/PDB/16ND_CDRH3.png](./graph/structural_analysis/PDB/16ND_CDRH3.png): Figure 5C
 
 4. Plot light chain interactions  of AG11-2F01 and 16.ND.92
-``pymol script/structural_analysis/interact_LC.pml`   
+``pymol script/structural_analysis/interact_LC.pml``   
     - Input files:
       - [./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb](./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb)
       - [./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb](./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb)
@@ -244,21 +245,21 @@ All scripts were executed at this level.
       - [./graph/structural_analysis/PDB/16ND_LC.png](./graph/structural_analysis/PDB/16ND_LC.png): Figure 5D
 
 5. Plot BSA of IGHD3-3 HA stem antibodies
-``Rscript script/structural_analysis/plot_BSA_bar_chart.R`   
+``Rscript script/structural_analysis/plot_BSA_bar_chart.R``   
     - Input files:
       - [./experimental_data/structural_analysis/bsa_percentage.tsv](./experimental_data/structural_analysis/bsa_percentage.tsv)
     - Output files:
       - [./graph/structural_analysis/BSA_stacked_bar_chart.png](./graph/structural_analysis/BSA_stacked_bar_chart.png): Figure 5E
 
 6. Plot IGHD3-3 contribution to VH paratopes
-``Rscript script/structural_analysis/plot_3-3_BSA.R`   
+``Rscript script/structural_analysis/plot_3-3_BSA.R``   
     - Input files:
       - [./experimental_data/structural_analysis/3-3_BSA_percentage.tsv](./experimental_data/structural_analysis/3-3_BSA_percentage.tsv)
     - Output files:
       - [./graph/structural_analysis/BSA_IGHD3-3_bar_plot.png](./graph/structural_analysis/BSA_IGHD3-3_bar_plot.png): Figure 5F
 
 7. Plot CDRH3 overlays of IGHD3-3 HA stem antibodies
-``pymol script/structural_analysis/interact_LC.pml`   
+``pymol script/structural_analysis/interact_LC.pml``   
     - Input files:
       - [./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb](./experimental_data/structural_analysis/PDB/SI06HA_2F01.pdb)
       - [./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb](./experimental_data/structural_analysis/PDB/SI06HA_16ND92.pdb)
@@ -273,17 +274,17 @@ All scripts were executed at this level.
 
 ### Functional characterizations
 8. Plot ELISA result heatmap
-``Rscript script/functional_characterization/plot_EC50.R`   
+``Rscript script/functional_characterization/plot_EC50.R``   
     - Output files:
       - [./graph/functional_characterization/ELISA_EC50_heatmap.png](./graph/functional_characterization/ELISA_EC50_heatmap.png): Figure 6A
 
 9. Plot micro-neutralization result heatmap
-``Rscript script/functional_characterization/plot_IC50.R`   
+``Rscript script/functional_characterization/plot_IC50.R``   
     - Output files:
       - [./graph/functional_characterization/IC50_heatmap.png](./graph/functional_characterization/IC50_heatmap.png): Figure 6B
 
 10. Plot in vivo experiment data
-``Rscript script/functional_characterization/plot_in_vivo.R` 
+``Rscript script/functional_characterization/plot_in_vivo.R`` 
     - Input files:
       - [./experimental_data/functional_analysis/invivo_weight_loss.tsv](./experimental_data/functional_analysis/invivo_weight_loss.tsv)
       - [./experimental_data/functional_analysis/invivo_survival.tsv](./experimental_data/functional_analysis/invivo_survival.tsv)
