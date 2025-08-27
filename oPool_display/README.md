@@ -166,7 +166,7 @@ All scripts were executed at this level.
     - Output files:
       - [./graph/validation/ELISA/oPool_validation_heatmap_ELISA.png](./graph/validation/ELISA/oPool_validation_heatmap_ELISA.png): Figure 3B
 
-### K<sub>D<sub> measurement via BLI
+### K<sub>D</sub> measurement via BLI
 1. Compile BLI Kd raw data for plotting
 ``python3 script/validation/BLI/compile_BLI_result_batch.py``
     - Input files:
