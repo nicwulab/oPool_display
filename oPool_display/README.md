@@ -14,7 +14,7 @@ This folder contains the scripts for oPool<sup>+</sup> display screen result/exp
 ## Folders
 * [./experimental_data](./experimental_data): Experimental data of oPool<sup>+</sup> display validation and functional charaterizations
 * [./graph](./graph): All plots generated in this study
-* [./oPool_results](./oPool_results): Processed screening data and final results
+* [./oPool_result](./oPool_result): Processed screening data and final results
 * [./ref_files](./ref_files): Reference files used in this study
 * [./script](./script): All custom scripts used in this study
 
@@ -22,8 +22,8 @@ This folder contains the scripts for oPool<sup>+</sup> display screen result/exp
 All scripts were executed at this level.
 
 ## Input files
-* [./ref_files/300lib_Abs.csv](./ref_files/300lib_Abs.csv): Table S1, information of selected antibodies
-* [./ref_files/lib_ref.tsv](./ref_files/300lib.tsv): Reference sequences of the natively paired antibody design
+* [./ref_files/300lib_Abs.tsv](./ref_files/300lib_Abs.tsv): Table S1, information of selected antibodies
+* [./ref_files/lib_ref.tsv](./ref_files/lib_ref.tsv): Reference sequences of the natively paired antibody design
 * [./ref_files/neg_abs_list.tsv](./ref_files/neg_abs_list.tsv): List of the 30 HA head antibodies (negative controls)
 * [./ref_files/202412_sample_name.tsv](./ref_files/202412_sample_name.tsv): Sample names of PacBio sequencing files
 * Raw read (PacBio CCS) files in fastq format from NIH SRA database [BioProject PRJNA1150188](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA1150188)

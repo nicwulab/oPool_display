@@ -9,7 +9,7 @@ Welcome! This README describe the workflow in manuscript: Highthroughput synthes
 
 
 ## Introduction
-oPool<sup>+</sup> display combines oligo pool synthesis and mRNA display to construct and characterize the specificity of many natively paired antibodies in parallel. As a proof-of-concept, we applied oPool<sup>+</sup> display to rapidly screen the binding activity of >300 previously uncharacterized influenza hemagglutinin (HA) antibodies against 9 HA variants via 16 different screens. Over 5,000 binding tests were performed in 3-5 days. This repository, therefore, contains two parts: 1. the oligo sequence desgins for library assmebly and 2. the screening result and analyses.
+oPool<sup>+</sup> display combines oligo pool synthesis and mRNA display to construct and characterize the specificity of many natively paired antibodies in parallel. As a proof-of-concept, we applied oPool<sup>+</sup> display to rapidly screen the binding activity of >300 previously uncharacterized influenza hemagglutinin (HA) antibodies against 9 HA variants via 16 different screens. Over 5,000 binding tests were performed in 3-5 days. This repository, therefore, contains two parts: 1. the [oPool_design](oPool_design/) folder: the oligo sequence designs for library assembly; 2. the [oPool_display](oPool_display/): the screening/validation results and analyses.
 
 ## Environment setup 
 To create the same working environment:
