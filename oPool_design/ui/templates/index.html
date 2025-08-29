@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oPool Design Pipeline</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .main-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            margin: 20px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .pipeline-step {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .pipeline-step:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .step-header {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-bottom: 1px solid #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .step-header:hover {
+            background: linear-gradient(135deg, #e9ecef, #dee2e6);
+        }
+        
+        .step-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .step-content {
+            padding: 25px;
+            display: none;
+        }
+        
+        .step-content.active {
+            display: block;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        .btn {
+            border-radius: 10px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color), #2980b9);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9, var(--secondary-color));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #229954);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #e67e22);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+        }
+        
+        .file-upload-area {
+            border: 3px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: var(--light-bg);
+        }
+        
+        .file-upload-area:hover {
+            border-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.05);
+        }
+        
+        .file-upload-area.dragover {
+            border-color: var(--secondary-color);
+            background: rgba(52, 152, 219, 0.1);
+        }
+        
+        .progress {
+            height: 25px;
+            border-radius: 15px;
+            background: #e9ecef;
+        }
+        
+        .progress-bar {
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--success-color), var(--secondary-color));
+        }
+        
+        .result-preview {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .file-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .file-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .file-item:hover {
+            border-color: var(--secondary-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-success {
+            background: rgba(39, 174, 96, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+        }
+        
+        .status-running {
+            background: rgba(52, 152, 219, 0.2);
+            color: var(--secondary-color);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--secondary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pipeline-flow {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+        }
+        
+        .flow-step {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        
+        .flow-number {
+            background: var(--secondary-color);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        
+        .flow-arrow {
+            color: var(--secondary-color);
+            margin: 0 20px;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar {
+            background: var(--light-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .sidebar h4 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .step-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-dna"></i> oPool Design Pipeline</h1>
+            <p>Antibody Library Construction and Analysis Platform</p>
+        </div>
+        
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <!-- Pipeline Overview -->
+                    <div class="pipeline-flow">
+                        <h4><i class="fas fa-project-diagram"></i> Pipeline Overview</h4>
+                        <div class="flow-step">
+                            <div class="flow-number">1</div>
+                            <div>Data Filtering & Extraction</div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-number">2</div>
+                            <div>Sequence Segments Iteration</div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-number">3</div>
+                            <div>CD-HIT Clustering</div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-number">4</div>
+                            <div>Result Selection & Reassembly</div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-number">5</div>
+                            <div>Overlap Region Selection</div>
+                            <i class="fas fa-arrow-right flow-arrow"></i>
+                        </div>
+                        <div class="flow-step">
+                            <div class="flow-number">6</div>
+                            <div>Library Truncation & Primers</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 1: Data Filtering -->
+                    <div class="pipeline-step">
+                        <div class="step-header" onclick="toggleStep(1)">
+                            <h3><i class="fas fa-filter"></i> Step 1: Data Filtering & Extraction</h3>
+                        </div>
+                        <div class="step-content" id="step1">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Upload Input File</h5>
+                                    <div class="file-upload-area" id="uploadArea">
+                                        <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                        <p class="mb-2">Drag and drop your Excel/CSV file here</p>
+                                        <p class="text-muted">or</p>
+                                        <input type="file" id="fileInput" class="d-none" accept=".xlsx,.csv,.tsv">
+                                        <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">
+                                            <i class="fas fa-folder-open"></i> Browse Files
+                                        </button>
+                                    </div>
+                                    <div id="fileInfo" class="mt-3" style="display: none;"></div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Filtering Parameters</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">V Gene Families to Remove:</label>
+                                        <input type="text" class="form-control" id="vList" placeholder="IGHV1-69 IGHV6-1 IGHV1-18" value="IGHV1-69 IGHV6-1 IGHV1-18">
+                                        <small class="text-muted">Space-separated list of V gene families</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">D Gene Families to Remove:</label>
+                                        <input type="text" class="form-control" id="dList" placeholder="IGHD3-9" value="IGHD3-9">
+                                        <small class="text-muted">Space-separated list of D gene families</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Germline Database Path:</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" id="germlinePath" placeholder="Path will be detected automatically">
+                                            <button class="btn btn-outline-secondary" type="button" onclick="detectGermlinePath()">
+                                                <i class="fas fa-search"></i> Auto-detect
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Path to PyIR germline database (will be auto-detected if not specified)</small>
+                                        <div id="germlinePathStatus" class="mt-2"></div>
+                                    </div>
+                                    <button class="btn btn-primary w-100" onclick="runExtract()">
+                                        <i class="fas fa-play"></i> Run Extraction
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="extractResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Sequence Iteration -->
+                    <div class="pipeline-step">
+                        <div class="step-header" onclick="toggleStep(2)">
+                            <h3><i class="fas fa-random"></i> Step 2: Sequence Segments Iteration</h3>
+                        </div>
+                        <div class="step-content" id="step2">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Input Parameters</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Input File:</label>
+                                        <select class="form-select" id="iterationInput">
+                                            <option value="">Select input file...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Pool Size:</label>
+                                        <input type="number" class="form-control" id="poolSize" value="2000000" min="1000" placeholder="2000000">
+                                        <small class="text-muted">Number of random sequences to generate</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Negative Control File:</label>
+                                        <select class="form-select" id="negativeFile">
+                                            <option value="">Select negative control file...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Output File:</label>
+                                        <input type="text" class="form-control" id="iterationOutput" value="iteration_output.fa">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Description</h5>
+                                    <p class="text-muted">
+                                        This step generates random codon sequences for each amino acid to reduce similarity 
+                                        among nucleotide sequences. Each antibody is truncated into 8 segments for increased diversity.
+                                    </p>
+                                    <button class="btn btn-primary w-100" onclick="runIteration()">
+                                        <i class="fas fa-play"></i> Run Iteration
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="iterationResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: CD-HIT -->
+                    <div class="pipeline-step">
+                        <div class="step-header" onclick="toggleStep(3)">
+                            <h3><i class="fas fa-sitemap"></i> Step 3: CD-HIT Clustering</h3>
+                        </div>
+                        <div class="step-content" id="step3">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>CD-HIT Parameters</h5>
+                                    <p class="text-muted">
+                                        This step groups similar sequences using CD-HIT based on sequence similarity. 
+                                        It takes the output from Step 2 and clusters segments based on similarities.
+                                    </p>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Note:</strong> This step may take a long time depending on the dataset size. 
+                                        Check the cd-hit.log file for progress.
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Run CD-HIT</h5>
+                                    <button class="btn btn-primary w-100" onclick="runCDHit()">
+                                        <i class="fas fa-play"></i> Run CD-HIT Clustering
+                                    </button>
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            Results will be stored in the 'cdhit' directory.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="cdhitResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 4: CD-HIT Result Selection -->
+                    <div class="pipeline-step">
+                        <div class="step-header" onclick="toggleStep(4)">
+                            <h3><i class="fas fa-check-circle"></i> Step 4: Result Selection & Reassembly</h3>
+                        </div>
+                        <div class="step-content" id="step4">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Selection Parameters</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Input File:</label>
+                                        <select class="form-select" id="cdhitInput">
+                                            <option value="">Select input file...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Negative Control File:</label>
+                                        <select class="form-select" id="cdhitNegative">
+                                            <option value="">Select negative control file...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Group Size:</label>
+                                        <input type="number" class="form-control" id="groupSize" value="25" min="1" placeholder="25">
+                                        <small class="text-muted">Number of sequences per group</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Number of Groups:</label>
+                                        <input type="number" class="form-control" id="numGroups" value="12" min="1" placeholder="12">
+                                        <small class="text-muted">Total number of groups to create</small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Negative Sequences per Group:</label>
+                                        <input type="number" class="form-control" id="numNegative" value="2" min="0" placeholder="2">
+                                        <small class="text-muted">Number of negative control sequences per group</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Description</h5>
+                                    <p class="text-muted">
+                                        This step selects one sequence from each CD-HIT cluster and reassembles antibodies. 
+                                        It creates groups of sequences for assembly libraries.
+                                    </p>
+                                    <button class="btn btn-primary w-100" onclick="runCDHitResult()">
+                                        <i class="fas fa-play"></i> Run Selection
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="cdhitResultResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 5: Overlap Check -->
+                    <div class="pipeline-step">
+                        <div class="step-header" onclick="toggleStep(5)">
+                            <h3><i class="fas fa-link"></i> Step 5: Overlap Region Selection</h3>
+                        </div>
+                        <div class="step-content" id="step5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Overlap Parameters</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Input File:</label>
+                                        <select class="form-select" id="overlapInput">
+                                            <option value="">Select input file...</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Negative Control File:</label>
+                                        <select class="form-select" id="overlapNegative">
+                                            <option value="">Select negative control file...</option>
+                                        </select>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Note:</strong> This step generates possible overlap primers for each sequence 
+                                        and checks similarity using BLAST+.
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Description</h5>
+                                    <p class="text-muted">
+                                        Generates overlap primers around CDR regions and selects the most unique overlap 
+                                        regions to minimize mismatches during PCR assembly.
+                                    </p>
+                                    <button class="btn btn-primary w-100" onclick="runOverlapCheck()">
+                                        <i class="fas fa-play"></i> Run Overlap Check
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="overlapResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 6: Chunk by Overlap -->
+                    <div class="pipeline-step">
+                        <div class="step-header" onclick="toggleStep(6)">
+                            <h3><i class="fas fa-cut"></i> Step 6: Library Truncation & Primers</h3>
+                        </div>
+                        <div class="step-content" id="step6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h5>Final Library Generation</h5>
+                                    <p class="text-muted">
+                                        This final step truncates antibodies into segments based on the selected overlap regions 
+                                        and adds replication primers for synthesis.
+                                    </p>
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle"></i>
+                                        <strong>Ready for Synthesis:</strong> The output will be ready for DNA synthesis.
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Run Final Step</h5>
+                                    <button class="btn btn-success w-100" onclick="runChunkByOverlap()">
+                                        <i class="fas fa-rocket"></i> Generate Final Library
+                                    </button>
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            This will create the final antibody library ready for synthesis.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="chunkResult" class="mt-3"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    <div class="sidebar">
+                        <h4><i class="fas fa-files-o"></i> File Manager</h4>
+                        <div class="mb-3">
+                            <button class="btn btn-outline-primary btn-sm w-100" onclick="refreshFileList()">
+                                <i class="fas fa-sync-alt"></i> Refresh Files
+                            </button>
+                        </div>
+                        
+                        <h6>Uploaded Files</h6>
+                        <div id="uploadFiles" class="file-list"></div>
+                        
+                        <h6 class="mt-3">Result Files</h6>
+                        <div id="resultFiles" class="file-list"></div>
+                    </div>
+                    
+                    <div class="sidebar">
+                        <h4><i class="fas fa-info-circle"></i> Pipeline Info</h4>
+                        <p class="text-muted">
+                            This pipeline constructs antibody libraries by:
+                        </p>
+                        <ul class="text-muted small">
+                            <li>Filtering and completing antibody sequences</li>
+                            <li>Generating random codon variants</li>
+                            <li>Clustering similar sequences</li>
+                            <li>Selecting unique overlap regions</li>
+                            <li>Creating final libraries with primers</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Global variables
+        let currentStep = 1;
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshFileList();
+            setupFileUpload();
+        });
+        
+        // Toggle step visibility
+        function toggleStep(stepNumber) {
+            const stepContent = document.getElementById(`step${stepNumber}`);
+            const isActive = stepContent.classList.contains('active');
+            
+            // Close all steps
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Open clicked step if it wasn't active
+            if (!isActive) {
+                stepContent.classList.add('active');
+                currentStep = stepNumber;
+            }
+        }
+        
+        // File upload setup
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('fileInput');
+            
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+        }
+        
+        // Handle file upload
+        function handleFileUpload(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showFileInfo(data.filename, data.filepath);
+                    refreshFileList();
+                } else {
+                    alert('Upload failed: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Upload failed');
+            });
+        }
+        
+        // Show file info
+        function showFileInfo(filename, filepath) {
+            const fileInfo = document.getElementById('fileInfo');
+            fileInfo.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>File uploaded successfully!</strong><br>
+                    <small>${filename}</small>
+                </div>
+            `;
+            fileInfo.style.display = 'block';
+        }
+        
+        // Refresh file list
+        function refreshFileList() {
+            fetch('/get_file_list')
+            .then(response => response.json())
+            .then(data => {
+                updateFileList('uploadFiles', data.upload_files);
+                updateFileList('resultFiles', data.result_files);
+                updateFileSelects(data.upload_files, data.result_files);
+            })
+            .catch(error => {
+                console.error('Error fetching file list:', error);
+            });
+        }
+        
+        // Update file list display
+        function updateFileList(containerId, files) {
+            const container = document.getElementById(containerId);
+            if (files.length === 0) {
+                container.innerHTML = '<p class="text-muted small">No files found</p>';
+                return;
+            }
+            
+            container.innerHTML = files.map(file => `
+                <div class="file-item">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${file.name}</strong><br>
+                            <small class="text-muted">${(file.size / 1024).toFixed(1)} KB</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-primary" onclick="previewFile('${file.name}')">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-success" onclick="downloadFile('${file.name}')">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <small class="text-muted">Modified: ${file.modified}</small>
+                </div>
+            `).join('');
+        }
+        
+        // Update file select dropdowns
+        function updateFileSelects(uploadFiles, resultFiles) {
+            const allFiles = [...uploadFiles, ...resultFiles];
+            const fileNames = allFiles.map(f => f.name);
+            
+            // Update all select elements
+            ['iterationInput', 'cdhitInput', 'overlapInput', 'iterationOutput', 'cdhitNegative', 'overlapNegative'].forEach(id => {
+                const select = document.getElementById(id);
+                if (select && select.tagName === 'SELECT') {
+                    const currentValue = select.value;
+                    select.innerHTML = '<option value="">Select file...</option>';
+                    fileNames.forEach(name => {
+                        const option = document.createElement('option');
+                        option.value = name;
+                        option.textContent = name;
+                        if (name === currentValue) option.selected = true;
+                        select.appendChild(option);
+                    });
+                }
+            });
+        }
+        
+        // Run pipeline steps
+        function runExtract() {
+            const inputFile = document.getElementById('fileInput').files[0];
+            if (!inputFile) {
+                alert('Please upload a file first');
+                return;
+            }
+            
+            const vList = document.getElementById('vList').value.split(' ').filter(v => v.trim());
+            const dList = document.getElementById('dList').value.split(' ').filter(d => d.trim());
+            const germlinePath = document.getElementById('germlinePath').value;
+            
+            const data = {
+                input_file: inputFile.name,
+                v_list: vList,
+                d_list: dList,
+                germline_path: germlinePath
+            };
+            
+            runPipelineStep('extract', data, 'extractResult');
+        }
+        
+        function runIteration() {
+            const data = {
+                input_file: document.getElementById('iterationInput').value,
+                pool_size: document.getElementById('poolSize').value,
+                negative_file: document.getElementById('negativeFile').value,
+                output_file: document.getElementById('iterationOutput').value
+            };
+            
+            if (!data.input_file) {
+                alert('Please select an input file');
+                return;
+            }
+            
+            runPipelineStep('iteration', data, 'iterationResult');
+        }
+        
+        function runCDHit() {
+            runPipelineStep('cdhit', {}, 'cdhitResult');
+        }
+        
+        function runCDHitResult() {
+            const data = {
+                input_file: document.getElementById('cdhitInput').value,
+                negative_file: document.getElementById('cdhitNegative').value,
+                group_size: document.getElementById('groupSize').value,
+                num_groups: document.getElementById('numGroups').value,
+                num_negative: document.getElementById('numNegative').value
+            };
+            
+            if (!data.input_file) {
+                alert('Please select an input file');
+                return;
+            }
+            
+            runPipelineStep('cdhit_result', data, 'cdhitResultResult');
+        }
+        
+        function runOverlapCheck() {
+            const data = {
+                input_file: document.getElementById('overlapInput').value,
+                negative_file: document.getElementById('overlapNegative').value
+            };
+            
+            if (!data.input_file) {
+                alert('Please select an input file');
+                return;
+            }
+            
+            runPipelineStep('overlap_check', data, 'overlapResult');
+        }
+        
+        function runChunkByOverlap() {
+            runPipelineStep('chunk_by_overlap', {}, 'chunkResult');
+        }
+        
+        // Generic pipeline step runner
+        function runPipelineStep(step, data, resultContainerId) {
+            const resultContainer = document.getElementById(resultContainerId);
+            resultContainer.innerHTML = `
+                <div class="alert alert-info">
+                    <div class="loading-spinner"></div>
+                    Running ${step}...
+                </div>
+            `;
+            
+            fetch(`/run_${step}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    resultContainer.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>${result.step} completed successfully!</strong>
+                            ${result.preview ? `<br><small>Output: ${result.total_rows} rows</small>` : ''}
+                            ${result.file_size_mb ? `<br><small>File size: ${result.file_size_mb} MB</small>` : ''}
+                        </div>
+                        ${result.preview ? `
+                            <div class="result-preview">
+                                <h6>Output Preview:</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>${result.preview[0] ? Object.keys(result.preview[0]).map(key => `<th>${key}</th>`).join('') : ''}</tr>
+                                        </thead>
+                                        <tbody>
+                                            ${result.preview.map(row => 
+                                                `<tr>${Object.values(row).map(val => `<td>${val}</td>`).join('')}</tr>`
+                                            ).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        ` : ''}
+                    `;
+                    refreshFileList();
+                } else {
+                    resultContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>${result.step} failed!</strong><br>
+                            <small>${result.error}</small>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                resultContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error running ${step}!</strong><br>
+                        <small>${error.message}</small>
+                    </div>
+                `;
+            });
+        }
+        
+        // Germline path detection
+        function detectGermlinePath() {
+            const statusDiv = document.getElementById('germlinePathStatus');
+            const pathInput = document.getElementById('germlinePath');
+            
+            statusDiv.innerHTML = '<div class="text-info"><i class="fas fa-spinner fa-spin"></i> Detecting germline database path...</div>';
+            
+            fetch('/get_germline_path')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        pathInput.value = data.path;
+                        statusDiv.innerHTML = `<div class="text-success"><i class="fas fa-check-circle"></i> ${data.message}</div>`;
+                    } else {
+                        statusDiv.innerHTML = `<div class="text-warning"><i class="fas fa-exclamation-triangle"></i> ${data.message}</div>`;
+                    }
+                })
+                .catch(error => {
+                    statusDiv.innerHTML = `<div class="text-danger"><i class="fas fa-times-circle"></i> Error detecting path: ${error.message}</div>`;
+                });
+        }
+        
+        // Auto-detect germline path on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            detectGermlinePath();
+        });
+        
+        // File operations
+        function previewFile(filename) {
+            fetch(`/preview/${filename}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.type === 'table') {
+                    showTablePreview(data, filename);
+                } else if (data.type === 'fasta') {
+                    showFastaPreview(data, filename);
+                } else {
+                    showTextPreview(data, filename);
+                }
+            })
+            .catch(error => {
+                alert('Error previewing file: ' + error.message);
+            });
+        }
+        
+        function showTablePreview(data, filename) {
+            const modal = createModal(filename, 'Table Preview');
+            modal.querySelector('.modal-body').innerHTML = `
+                <p><strong>Total rows:</strong> ${data.total_rows}</p>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>${data.columns.map(col => `<th>${col}</th>`).join('')}</tr>
+                        </thead>
+                        <tbody>
+                            ${data.data.map(row => 
+                                `<tr>${data.columns.map(col => `<td>${row[col] || ''}</td>`).join('')}</tr>`
+                            ).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function showFastaPreview(data, filename) {
+            const modal = createModal(filename, 'FASTA Preview');
+            modal.querySelector('.modal-body').innerHTML = `
+                <p><strong>Total lines:</strong> ${data.total_lines}</p>
+                <pre class="bg-light p-3 rounded">${data.data.join('')}</pre>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function showTextPreview(data, filename) {
+            const modal = createModal(filename, 'Text Preview');
+            modal.querySelector('.modal-body').innerHTML = `
+                <pre class="bg-light p-3 rounded">${data.data}</pre>
+                ${data.truncated ? '<p class="text-muted"><small>Content truncated</small></p>' : ''}
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function createModal(filename, title) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${title}: ${filename}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" onclick="downloadFile('${filename}')">Download</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            return modal;
+        }
+        
+        function downloadFile(filename) {
+            window.open(`/download/${filename}`, '_blank');
+        }
+    </script>
+</body>
+</html> 

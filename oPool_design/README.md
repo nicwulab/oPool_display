@@ -1,5 +1,191 @@
 # Pipeline for Antibody Library Construction 
 
+## Web UI
+
+A modern web interface, courtesy of Cursor Agent, is available for running this pipeline through an intuitive browser-based interface. The UI provides step-by-step workflow navigation, file management, and real-time progress tracking.
+
+### Launch the Web UI
+```bash
+# From the oPool_design directory
+python launch_ui.py
+# or
+./launch_ui.sh
+```
+
+The web interface will be available at `http://localhost:5001`. For detailed UI documentation, see [./ui/README_UI.md](./ui/README_UI.md).
+
+## Input File Requirements
+
+### Supported File Formats
+- **Excel files**: `.xlsx` format (recommended for initial data)
+- **CSV files**: `.csv` format with comma separation
+- **TSV files**: `.tsv` format with tab separation
+- **FASTA files**: `.fa` or `.fasta` format for sequence data
+
+### Input Data Structure
+The pipeline expects antibody sequence data with the following columns:
+
+| Column | Description | Required | Example |
+|--------|-------------|----------|---------|
+| `Name` | Unique identifier for each antibody | Yes | `100F4`, `K77-1A06` |
+| `VH_nuc` | Heavy chain nucleotide sequence | Yes | `ATG...` |
+| `VH_AA` | Heavy chain amino acid sequence | Yes | `QVQL...` |
+| `VL_nuc` | Light chain nucleotide sequence | Yes | `ATG...` |
+| `VL_AA` | Light chain amino acid sequence | Yes | `DIQMT...` |
+| `Heavy_V_gene` | Heavy chain V gene annotation | No | `IGHV4-61*03` |
+| `Heavy_J_gene` | Heavy chain J gene annotation | No | `IGHJ4*02` |
+| `Heavy_D_gene` | Heavy chain D gene annotation | No | `IGHD4-17*01` |
+| `Light_V_gene` | Light chain V gene annotation | No | `IGLV1-40*01` |
+| `Light_J_gene` | Light chain J gene annotation | No | `IGLJ1*01` |
+| `Specificity` | Antibody specificity | No | `HA:Unk`, `Group 1` |
+
+### Data Quality Requirements
+- **Complete sequences**: Both heavy and light chain sequences should be present
+- **Valid characters**: Nucleotide sequences should contain only A, T, G, C
+- **No stop codons**: Amino acid sequences should not contain `*` characters
+- **Proper length**: Sequences should be of appropriate length for antibody chains
+- **Unique names**: Each antibody should have a unique identifier
+
+### Example Input File
+```csv
+Name,VH_nuc,VH_AA,VL_nuc,VL_AA,Heavy_V_gene,Heavy_J_gene,Heavy_D_gene,Light_V_gene,Light_J_gene,Specificity
+100F4,CAG...,QVQL...,CAG...,DIQMT...,IGHV4-61*03,IGHJ4*02,IGHD4-17*01,IGLV1-40*01,IGLJ1*01,HA:Unk
+K77-1A06,ATG...,QVQL...,ATG...,DIQMT...,IGHV1-69,IGHJ1,IGHD3-9,IGLV1,IGLJ1,Group 1
+```
+
+## Local Setup and Execution
+
+### Prerequisites
+- **Python 3.9+** installed on your system
+- **Conda** or **Miniconda** for environment management
+- **Git** for cloning the repository
+- **Web browser** for accessing the UI
+
+### Step-by-Step Setup
+
+#### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd oPool_display/oPool_design
+```
+
+#### 2. Set Up Conda Environment
+```bash
+# Create and activate the oPool environment
+conda env create -f environment.yml
+conda activate oPool
+
+# Or if you prefer to create manually:
+conda create -n oPool python=3.9
+conda activate oPool
+conda install -c bioconda pyir cd-hit blast
+conda install pandas numpy biopython openpyxl
+```
+
+#### 3. Install Web UI Dependencies
+```bash
+cd ui
+pip install -r requirements.txt
+cd ..
+```
+
+#### 4. Run Setup and Configuration
+```bash
+# Automatically configure directories and check dependencies
+python setup_ui.py
+```
+
+#### 5. Launch the Web Interface
+```bash
+# Option 1: Using the main launcher (recommended)
+python launch_ui.py
+
+# Option 2: Using shell script
+./launch_ui.sh
+
+# Option 3: From the UI directory
+cd ui
+python start_ui.py
+```
+
+#### 6. Access the Web UI
+- Open your web browser
+- Navigate to: `http://localhost:5001`
+- The interface will automatically open in your default browser
+
+### Running the Pipeline
+
+#### Through the Web UI (Recommended)
+1. **Upload Input File**: Drag and drop your antibody sequence file (Excel/CSV format)
+2. **Configure Parameters**: Set filtering options and pipeline parameters
+3. **Execute Steps**: Run each pipeline step sequentially
+4. **Monitor Progress**: Track execution in real-time
+5. **Download Results**: Get processed files and analysis results
+
+#### Through Command Line
+```bash
+# Step 1: Data Filtering
+python script/extract.py -i data/TableS1.xlsx -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g ${pyir_db}/Ig/human -o result/filtered.csv
+
+# Step 2: Sequence Iteration
+python script/iteration.py -i result/filtered.csv -p 2000000 -n result/random_neg.csv -o result/iterated.fa
+
+# Step 3: CD-HIT Clustering
+bash script/cd-hit.sh
+
+# Step 4: Result Selection
+python script/cdhit_result.py -i result/iterated.fa -n result/random_neg.csv -gs 25 -ng 12 -nn 2
+
+# Step 5: Overlap Check
+python script/Overlap_check.py -i result/iterated.fa -n result/random_neg.csv
+
+# Step 6: Final Library Generation
+python script/ChunkByOverlap.py
+```
+
+### Troubleshooting Common Issues
+
+#### Port Already in Use
+```bash
+# Set custom port
+export FLASK_PORT=5002
+python launch_ui.py
+```
+
+#### Missing Dependencies
+```bash
+# Reinstall requirements
+cd ui
+pip install -r requirements.txt --force-reinstall
+cd ..
+```
+
+#### PyIR Database Not Found
+```bash
+# Set custom germline database path
+export GERMLINE_DB_PATH="/path/to/your/germline/database"
+python launch_ui.py
+```
+
+#### Permission Issues
+```bash
+# Make scripts executable
+chmod +x launch_ui.sh ui/start.sh
+```
+
+### Directory Structure After Setup
+```
+oPool_design/
+├── uploads/              # User uploaded files
+├── results/              # Pipeline output files
+├── logs/                 # Application logs
+├── ui/                   # Web interface files
+├── script/               # Pipeline scripts
+├── data/                 # Input data files
+└── blastDB/              # BLAST database files
+```
+
+---
 
 ## 1. Data Filtering:
     
