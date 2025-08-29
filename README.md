@@ -1,6 +1,8 @@
 # oPool<sup>+</sup> display: A high-throughput cell-free screening platform for natively paired antibodies
 Welcome! This README describes the workflow in the manuscript: High-throughput synthesis and specificity characterization of natively paired antibodies using oPool<sup>+</sup> display (Ouyang et al., 2025)
 
+![oPool+ Display](Ouyang_oPool_cover.jpg)
+
 ## Contents
 - [Introduction](#introduction)
 - [Environment setup](#environment-setup)

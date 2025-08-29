@@ -1,4 +1,4 @@
-## Step-by-step breakdown of oPool<sup>+</sup> display analysis
+# Step-by-step breakdown of oPool<sup>+</sup> display analysis
 
 ## Contents
 - [Introduction](#introduction)

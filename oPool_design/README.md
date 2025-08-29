@@ -60,11 +60,11 @@ The pipeline expects antibody sequence data with the following columns:
 - **Unique names**: Each antibody should have a unique identifier
 
 ### Example Input File
-```csv
-Name,VH_nuc,VH_AA,VL_nuc,VL_AA,Heavy_V_gene,Heavy_J_gene,Heavy_D_gene,Light_V_gene,Light_J_gene,Specificity
-100F4,CAG...,QVQL...,CAG...,DIQMT...,IGHV4-61*03,IGHJ4*02,IGHD4-17*01,IGLV1-40*01,IGLJ1*01,HA:Unk
-K77-1A06,ATG...,QVQL...,ATG...,DIQMT...,IGHV1-69,IGHJ1,IGHD3-9,IGLV1,IGLJ1,Group 1
-```
+
+| Name | VH_nuc | VH_AA | VL_nuc | VL_AA | Heavy_V_gene | Heavy_J_gene | Heavy_D_gene | Light_V_gene | Light_J_gene | Specificity |
+|------|--------|-------|--------|-------|--------------|--------------|--------------|--------------|--------------|-------------|
+| 100F4 | CAG... | QVQL... | CAG... | DIQMT... | IGHV4-61*03 | IGHJ4*02 | IGHD4-17*01 | IGLV1-40*01 | IGLJ1*01 | HA:Unk |
+| K77-1A06 | ATG... | QVQL... | ATG... | DIQMT... | IGHV1-69 | IGHJ1 | IGHD3-9 | IGLV1 | IGLJ1 | Group 1 |
 
 ## Local Setup and Execution
 
