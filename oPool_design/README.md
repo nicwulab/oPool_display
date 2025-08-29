@@ -1,10 +1,14 @@
 # Pipeline for Antibody Library Construction 
 
-## Web UI
+## Web/Local UI
 
-A modern web interface, courtesy of Cursor Agent, is available for running this pipeline through an intuitive browser-based interface. The UI provides step-by-step workflow navigation, file management, and real-time progress tracking.
+A local/web user interface, courtesy of the Cursor Agent, is available for running this pipeline through an intuitive browser-based interface. The UI provides step-by-step workflow navigation, file management, and real-time progress tracking.
 
-### Launch the Web UI
+![oPool Design Pipeline UI](ui/UI.png)
+
+### Launch the UI
+Clone this repository
+
 ```bash
 # From the oPool_design directory
 python launch_ui.py
@@ -186,6 +190,7 @@ oPool_design/
 ```
 
 ---
+## Technical Notes on the Design Pipeline
 
 ## 1. Data Filtering:
     
