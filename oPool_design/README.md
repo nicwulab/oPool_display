@@ -11,21 +11,9 @@
 
 ## Web UI
 
-A local/web user interface, courtesy of the Cursor Agent, is available for running this pipeline through an intuitive browser-based interface. The UI provides step-by-step workflow navigation, file management, and real-time progress tracking.
+A local/web user interface, courtesy of the Cursor Agent, is available for running this pipeline through an intuitive browser page. The UI provides step-by-step workflow navigation, file management, and real-time progress tracking. Please see the following sections for input file requirements and how to set up/launch the UI.
 
 ![oPool Design Pipeline UI](ui/UI.png)
-
-### Launch the UI
-Clone this repository
-
-```bash
-# From the oPool_design directory
-python launch_ui.py
-# or
-./launch_ui.sh
-```
-
-The web interface will be available at `http://localhost:5001`. For detailed UI documentation, see [./ui/README_UI.md](./ui/README_UI.md).
 
 ## Input File Requirements
 
