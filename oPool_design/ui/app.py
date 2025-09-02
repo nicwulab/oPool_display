@@ -104,7 +104,7 @@ def run_extract():
             'step': 'Extract'
         })
     
-    cmd = f"python HA_screen/script/extract.py -i {input_file}"
+    cmd = f"python script/extract.py -i {input_file}"
     
     v_list = data.get('v_list', config.DEFAULT_V_GENE_FAMILIES)
     d_list = data.get('d_list', config.DEFAULT_D_GENE_FAMILIES)
@@ -156,7 +156,7 @@ def run_iteration():
     data = request.get_json()
     
     pool_size = data.get('pool_size', config.DEFAULT_POOL_SIZE)
-    cmd = f"python HA_screen/script/iteration.py -i {data['input_file']} -p {pool_size} -n {data['negative_file']} -o {data['output_file']}"
+    cmd = f"python script/iteration.py -i {data['input_file']} -p {pool_size} -n {data['negative_file']} -o {data['output_file']}"
     
     result = run_pipeline_step('Iteration', cmd, data['output_file'])
     
@@ -173,7 +173,7 @@ def run_cdhit():
     data = request.get_json()
     
     # Run cd-hit script
-    cmd = f"bash HA_screen/script/cd-hit.sh"
+    cmd = f"bash script/cd-hit.sh"
     
     result = run_pipeline_step('CD-HIT', cmd)
     
@@ -206,7 +206,7 @@ def run_overlap_check():
 def run_chunk_by_overlap():
     data = request.get_json()
     
-    cmd = f"python HA_screen/script/ChunkByOverlap.py"
+    cmd = f"python script/ChunkByOverlap.py"
     
     result = run_pipeline_step('Chunk by Overlap', cmd)
     
