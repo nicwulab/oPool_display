@@ -35,29 +35,122 @@ app.config['SECRET_KEY'] = config.SECRET_KEY
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def get_file_size_readable(filepath):
+    """Get human-readable file size"""
+    try:
+        size = os.path.getsize(filepath)
+        for unit in ["B", "KB", "MB", "GB"]:
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+        return f"{size:.1f} TB"
+    except OSError:
+        return "Unknown"
+
+def scan_output_files(step_name, parent_dir):
+    """Scan for output files created by each pipeline step"""
+    files_created = []
+    
+    if step_name == "Extract":
+        expected_files = [
+            ("ui_results/VH.fa", "Heavy chain sequences (FASTA)", "Intermediate"),
+            ("ui_results/VL.fa", "Light chain sequences (FASTA)", "Intermediate"),
+            ("ui_results/VH.tsv.gz", "Heavy chain PyIR annotations", "Intermediate"),
+            ("ui_results/VL.tsv.gz", "Light chain PyIR annotations", "Intermediate")
+        ]
+        try:
+            for file in os.listdir(os.path.join(parent_dir, "ui_results")):
+                if file.endswith("_output.csv"):
+                    expected_files.append((f"ui_results/{file}", "Filtered antibody data (Main Output)", "Primary"))
+        except:
+            pass
+    elif step_name == "Iteration":
+        expected_files = []
+        try:
+            for file in os.listdir(os.path.join(parent_dir, "ui_results")):
+                if file.startswith("iteration_") and file.endswith(".fa"):
+                    expected_files.append((f"ui_results/{file}", "Segmented sequences with random codons (Main Output)", "Primary"))
+        except:
+            pass
+    elif step_name == "CD-HIT":
+        expected_files = [("cdhit/cd-hit.log", "CD-HIT clustering log", "Log")]
+        try:
+            for file in os.listdir(os.path.join(parent_dir, "ui_results")):
+                if file.endswith(".clstr"):
+                    expected_files.append((f"ui_results/{file}", "Sequence cluster file", "Intermediate"))
+        except:
+            pass
+    elif step_name == "Overlap Check":
+        expected_files = [("ui_results/segs_id/", "Segment overlap analysis files", "Directory")]
+        try:
+            segs_dir = os.path.join(parent_dir, "ui_results/segs_id")
+            if os.path.exists(segs_dir):
+                for file in os.listdir(segs_dir):
+                    if file.endswith(".csv"):
+                        expected_files.append((f"ui_results/segs_id/{file}", "Overlap analysis results", "Intermediate"))
+        except:
+            pass
+    elif step_name == "Chunk by Overlap":
+        expected_files = []
+        try:
+            for file in os.listdir(os.path.join(parent_dir, "ui_results")):
+                if "_oPool_design.csv" in file:
+                    expected_files.append((f"ui_results/{file}", "Final library design (Main Output)", "Primary"))
+                elif "_final_sequences.tsv" in file:
+                    expected_files.append((f"ui_results/{file}", "Final sequences with metadata", "Primary"))
+                elif file.endswith("_sequences.fasta"):
+                    expected_files.append((f"ui_results/{file}", "Pool-specific FASTA sequences", "Primary"))
+        except:
+            pass
+    else:
+        expected_files = []
+    
+    for filepath, description, file_type in expected_files:
+        full_path = os.path.join(parent_dir, filepath)
+        if os.path.exists(full_path):
+            if os.path.isdir(full_path):
+                try:
+                    file_count = len([f for f in os.listdir(full_path) if os.path.isfile(os.path.join(full_path, f))])
+                    files_created.append({"path": filepath, "description": description, "type": file_type, "size": f"{file_count} files", "exists": True})
+                except:
+                    files_created.append({"path": filepath, "description": description, "type": file_type, "size": "Unknown", "exists": True})
+            else:
+                files_created.append({"path": filepath, "description": description, "type": file_type, "size": get_file_size_readable(full_path), "exists": True})
+        else:
+            files_created.append({"path": filepath, "description": description, "type": file_type, "size": "Not created", "exists": False})
+    
+    return files_created
+
 def run_pipeline_step(step_name, command, output_file=None):
     """Run a pipeline step and return results"""
     try:
         # Run command from the parent directory (oPool_design) not ui/
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=parent_dir)
+        
+        # Scan for output files
+        files_created = scan_output_files(step_name, parent_dir)
+        
         if result.returncode == 0:
             return {
                 'success': True,
                 'output': result.stdout,
-                'step': step_name
+                'step': step_name,
+                'files_created': files_created
             }
         else:
             return {
                 'success': False,
                 'error': result.stderr,
-                'step': step_name
+                'step': step_name,
+                'files_created': files_created
             }
     except Exception as e:
         return {
             'success': False,
             'error': str(e),
-            'step': step_name
+            'step': step_name,
+            'files_created': []
         }
 
 @app.route('/')
@@ -257,6 +350,61 @@ def download_file(filename):
     except FileNotFoundError:
         return jsonify({'error': 'File not found'}), 404
 
+@app.route('/view_file/<path:filepath>')
+def view_file(filepath):
+    """View any file in the pipeline directories"""
+    try:
+        # Build the full path - filepath already includes directory structure
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        full_path = os.path.join(parent_dir, filepath)
+        
+        if not os.path.exists(full_path):
+            return jsonify({'error': 'File not found'}), 404
+        
+        filename = os.path.basename(filepath)
+        
+        if filename.endswith(('.csv', '.tsv')):
+            # For CSV/TSV files, read with pandas
+            if filename.endswith('.tsv'):
+                df = pd.read_csv(full_path, sep='\t')
+            else:
+                df = pd.read_csv(full_path)
+            
+            return jsonify({
+                'type': 'table',
+                'data': df.head(100).fillna('').to_dict('records'),
+                'columns': df.columns.tolist(),
+                'total_rows': len(df),
+                'file_path': filepath
+            })
+        
+        elif filename.endswith(('.fa', '.fasta')):
+            # For FASTA files, read first 100 lines
+            with open(full_path, 'r') as f:
+                lines = f.readlines()[:100]
+            
+            return jsonify({
+                'type': 'fasta',
+                'data': lines,
+                'total_lines': len(lines),
+                'file_path': filepath
+            })
+        
+        else:
+            # For other files, read as text
+            with open(full_path, 'r') as f:
+                content = f.read(5000)  # First 5000 characters
+            
+            return jsonify({
+                'type': 'text',
+                'data': content,
+                'truncated': len(content) == 5000,
+                'file_path': filepath
+            })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/preview/<filename>')
 def preview_file(filename):
     """Preview a file (first 100 lines)"""
@@ -327,4 +475,4 @@ def environment_info():
     return jsonify({'instructions': instructions})
 
 if __name__ == '__main__':
-    app.run(debug=config.DEBUG, host=config.HOST, port=config.PORT) 
+    app.run(debug=config.DEBUG, host=config.HOST, port=config.PORT)
