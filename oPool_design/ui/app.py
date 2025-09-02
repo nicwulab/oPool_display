@@ -143,7 +143,9 @@ def run_extract():
         # Try to read the output file to show preview
         try:
             df = pd.read_csv(output_file)
-            result['preview'] = df.head(10).to_dict('records')
+            # Replace NaN values with None for JSON compatibility
+            df_preview = df.head(10).fillna('')
+            result['preview'] = df_preview.to_dict('records')
             result['total_rows'] = len(df)
         except:
             result['preview'] = []
@@ -270,7 +272,7 @@ def preview_file(filename):
             
             return jsonify({
                 'type': 'table',
-                'data': df.head(100).to_dict('records'),
+                'data': df.head(100).fillna('').to_dict('records'),
                 'columns': df.columns.tolist(),
                 'total_rows': len(df)
             })
