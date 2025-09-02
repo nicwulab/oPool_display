@@ -38,7 +38,9 @@ def allowed_file(filename):
 def run_pipeline_step(step_name, command, output_file=None):
     """Run a pipeline step and return results"""
     try:
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd='.')
+        # Run command from the parent directory (oPool_design) not ui/
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=parent_dir)
         if result.returncode == 0:
             return {
                 'success': True,
@@ -89,7 +91,20 @@ def run_extract():
     data = request.get_json()
     
     # Build command for extract.py
-    cmd = f"python script/extract.py -i {data['input_file']}"
+    input_file = data['input_file']
+    # If it's just a filename, assume it's in uploads directory
+    if not os.path.isabs(input_file):
+        input_file = os.path.join(app.config['UPLOAD_FOLDER'], input_file)
+    
+    # Make sure the file exists
+    if not os.path.exists(input_file):
+        return jsonify({
+            'success': False,
+            'error': f'Input file not found: {input_file}',
+            'step': 'Extract'
+        })
+    
+    cmd = f"python HA_screen/script/extract.py -i {input_file}"
     
     v_list = data.get('v_list', config.DEFAULT_V_GENE_FAMILIES)
     d_list = data.get('d_list', config.DEFAULT_D_GENE_FAMILIES)
@@ -114,6 +129,11 @@ def run_extract():
     if germline_path:
         cmd += f" -g {germline_path}"
     
+    # Add clonotype filter parameter
+    skip_clonotype_filter = data.get('skip_clonotype_filter', config.DEFAULT_SKIP_CLONOTYPE_FILTER)
+    if skip_clonotype_filter:
+        cmd += " --skip-clonotype-filter"
+    
     output_file = os.path.join(app.config['RESULT_FOLDER'], 'extract_output.csv')
     cmd += f" -o {output_file}"
     
@@ -136,7 +156,7 @@ def run_iteration():
     data = request.get_json()
     
     pool_size = data.get('pool_size', config.DEFAULT_POOL_SIZE)
-    cmd = f"python script/iteration.py -i {data['input_file']} -p {pool_size} -n {data['negative_file']} -o {data['output_file']}"
+    cmd = f"python HA_screen/script/iteration.py -i {data['input_file']} -p {pool_size} -n {data['negative_file']} -o {data['output_file']}"
     
     result = run_pipeline_step('Iteration', cmd, data['output_file'])
     
@@ -153,7 +173,7 @@ def run_cdhit():
     data = request.get_json()
     
     # Run cd-hit script
-    cmd = f"bash script/cd-hit.sh"
+    cmd = f"bash HA_screen/script/cd-hit.sh"
     
     result = run_pipeline_step('CD-HIT', cmd)
     
@@ -166,7 +186,7 @@ def run_cdhit_result():
     group_size = data.get('group_size', config.DEFAULT_GROUP_SIZE)
     num_groups = data.get('num_groups', config.DEFAULT_NUM_GROUPS)
     num_negative = data.get('num_negative', config.DEFAULT_NUM_NEGATIVE)
-    cmd = f"python script/cdhit_result.py -i {data['input_file']} -n {data['negative_file']} -gs {group_size} -ng {num_groups} -nn {num_negative}"
+    cmd = f"python script/cdhit_result_modified.py -i {data['input_file']} -n {data['negative_file']} -gs {group_size} -ng {num_groups} -nn {num_negative}"
     
     result = run_pipeline_step('CD-HIT Result Selection', cmd)
     
@@ -176,7 +196,7 @@ def run_cdhit_result():
 def run_overlap_check():
     data = request.get_json()
     
-    cmd = f"python script/Overlap_check.py -i {data['input_file']} -n {data['negative_file']}"
+    cmd = f"python script/Overlap_check_modified.py -i {data['input_file']} -n {data['negative_file']}"
     
     result = run_pipeline_step('Overlap Check', cmd)
     
@@ -186,7 +206,7 @@ def run_overlap_check():
 def run_chunk_by_overlap():
     data = request.get_json()
     
-    cmd = f"python script/ChunkByOverlap.py"
+    cmd = f"python HA_screen/script/ChunkByOverlap.py"
     
     result = run_pipeline_step('Chunk by Overlap', cmd)
     
@@ -296,6 +316,13 @@ def get_germline_path_route():
             'path': '',
             'message': 'No germline database path found. Please set GERMLINE_DB_PATH environment variable or install PyIR.'
         })
+
+@app.route('/environment_info')
+def environment_info():
+    """Get environment setup information"""
+    from config import get_environment_setup_instructions
+    instructions = get_environment_setup_instructions()
+    return jsonify({'instructions': instructions})
 
 if __name__ == '__main__':
     app.run(debug=config.DEBUG, host=config.HOST, port=config.PORT) 

@@ -113,9 +113,9 @@ def Seq_grep(df_all, ID, N_Seq, Prefer_list, Neg_list):
 def write_seq(df, Result_name, i, ID, Seq_dict):
     seqs = [id[0].split(":")[0] for id in Result_name]
     df = df[~df.ID.isin(seqs)]
-    with open(f"result/Re_assembled_{i}_{ID}.fa", 'w') as F:
+    with open(f"ui_results/Re_assembled_{i}_{ID}.fa", 'w') as F:
         F.close()
-    with open(f"result/Re_assembled_{i}_{ID}.fa", 'a') as F:
+    with open(f"ui_results/Re_assembled_{i}_{ID}.fa", 'a') as F:
         for seq_name in Result_name:
             seq_name.sort()
             F.write(">"+seq_name[0].split(':')[0] + "\n")

@@ -34,7 +34,7 @@ def check_directories():
     parent_dir = os.path.dirname(os.path.abspath(__file__))
     directories = [
         os.path.join(parent_dir, 'uploads'),
-        os.path.join(parent_dir, 'results'),
+        os.path.join(parent_dir, 'ui_results'),
         os.path.join(parent_dir, 'logs')
     ]
     

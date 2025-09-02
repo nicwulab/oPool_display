@@ -64,21 +64,21 @@ def AnnoG_Merge(TB):
         2. Read the annotation result and retrieve the score of v gene
         3. Merge the table and sorting it based the V gene alignment score
     PS: make sure the pyir is installed appropriately
-    The intermediate file would be stored as "result/VH.a", "result/VL.a", "result/VH.a", 'ui_results/VH.tsv.gz', and 'ui_results/VL.tsv.gz'. With the exist of them, the annotation wouldn't start again. 
+    The intermediate file would be stored as "result/VH.a", "result/VL.a", "result/VH.a", 'result/VH.tsv.gz', and 'result/VL.tsv.gz'. With the exist of them, the annotation wouldn't start again. 
     '''
-    with open("ui_results/VH.fa", 'w') as F:
+    with open("result/VH.fa", 'w') as F:
         F.write("\n".join([f">{i[0]}\n{i[1]}" for i in TB[['Name', 'VH_nuc']].to_numpy()]) + "\n")
-    with open("ui_results/VL.fa", 'w') as F:
+    with open("result/VL.fa", 'w') as F:
         F.write("\n".join([f">{i[0]}\n{i[1]}" for i in TB[['Name', 'VL_nuc']].to_numpy()]) + "\n")
     # Germline annotation
     # read and integrate the result
     try:
-        TB_anno = pd.read_csv('ui_results/VH.tsv.gz', sep = '\t')
+        TB_anno = pd.read_csv('result/VH.tsv.gz', sep = '\t')
     except:
-        os.system("pyir -m 50 ui_results/VH.fa --outfmt tsv -o VH -s human")
-        os.system("pyir -m 50 ui_results/VL.fa --outfmt tsv -o VL -s human")
+        os.system("pyir -m 50 result/VH.fa --outfmt tsv -o VH -s human")
+        os.system("pyir -m 50 result/VL.fa --outfmt tsv -o VL -s human")
         os.system("mv VH.tsv.gz VL.tsv.gz result")
-        TB_anno = pd.read_csv('ui_results/VH.tsv.gz', sep = '\t')
+        TB_anno = pd.read_csv('result/VH.tsv.gz', sep = '\t')
     TB = pd.merge( TB, TB_anno[['sequence_id', 'v_score']], left_on = 'Name', right_on = 'sequence_id')
     TB.v_score = TB.v_score.fillna(0)
     TB = TB.sort_values("v_score", ascending = True)
@@ -163,7 +163,7 @@ def Seq_Complete(TB, chain, Lst1, Lst2):
     '''
     In this function, we read the annotation result from the Pyir to retrieve the germlines id and get the germlines sequence from the database.
     '''
-    TB_anno = pd.read_csv(f'HA_screen/result/{chain}.tsv.gz', sep = '\t')
+    TB_anno = pd.read_csv(f'result/{chain}.tsv.gz', sep = '\t')
     for id in Lst1:
         #id = Lst1[0]
         tmp = TB_anno[TB_anno.sequence_id == id]

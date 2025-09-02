@@ -23,7 +23,7 @@ A modern, user-friendly web interface for the oPool Design Pipeline, enabling re
 - Support for Excel (.xlsx), CSV (.csv), FASTA (.fa), and TSV (.tsv) files
 - File preview functionality
 - Download capabilities for results
-- Organized file storage in uploads/ and results/ folders
+- Organized file storage in uploads/ and ui_results/ folders
 
 ### ⚙️ **Configuration**
 - **Automatic germline database detection** - No more hardcoded paths!
@@ -88,10 +88,10 @@ The UI automatically detects your PyIR germline database location. It searches i
    ```
 
 2. **Auto-detection** (searches common locations):
-   - `~/miniconda3/envs/oPool/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human`
-   - `~/miniconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human`
-   - `~/anaconda3/envs/oPool/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human`
-   - `~/anaconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/data/germlines/Ig/human`
+   - `~/miniconda3/envs/oPool/lib/python3.9/site-packages/crowelab_pyir/HA_screen/data/germlines/Ig/human`
+   - `~/miniconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/HA_screen/data/germlines/Ig/human`
+   - `~/anaconda3/envs/oPool/lib/python3.9/site-packages/crowelab_pyir/HA_screen/data/germlines/Ig/human`
+   - `~/anaconda3/envs/Abs/lib/python3.9/site-packages/crowelab_pyir/HA_screen/data/germlines/Ig/human`
    - System-wide paths: `/usr/local/share/pyir/germlines/Ig/human`
    - Local project path: `./germlines/Ig/human`
 
@@ -147,10 +147,10 @@ oPool_design/
 ├── launch_ui.py                 # Main launcher script
 ├── launch_ui.sh                 # Main shell launcher
 ├── uploads/                     # User uploaded files
-├── results/                     # Pipeline output files
-├── script/                      # Original pipeline scripts
-├── data/                        # Input data files
-└── result/                      # Original pipeline results
+├── ui_results/                  # Pipeline output files
+├── HA_screen/script/                      # Original pipeline scripts
+├── HA_screen/data/                        # Input data files
+└── HA_screen/result/                      # Original pipeline results
 ```
 
 ## Configuration
@@ -181,7 +181,7 @@ oPool_design/
 
 2. **Pipeline Steps Fail**
    - Verify all dependencies are installed
-   - Check script/ directory contains original pipeline scripts
+   - Check HA_screen/script/ directory contains original pipeline scripts
    - Review error messages in the web interface
    - Check console output for detailed errors
 
@@ -242,7 +242,7 @@ For issues with the web interface:
 For issues with the underlying pipeline:
 - Refer to the main README.md
 - Check script documentation
-- Verify environment.yml dependencies
+- Verify environment.yml dependencies 
 
 ## Portability
 

@@ -1,2 +1,86 @@
-cdhit
-result/TableS1_filtered.fa
+# Large files that exceed GitHub limits
+*.fa
+*.clstr
+*.fasta
+*.fa.gz
+*.fasta.gz
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Environment files
+.env
+.venv
+env/
+venv/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# UI results and uploads (generated files)
+oPool_design/ui_results/
+oPool_design/uploads/
+oPool_design/logs/
+
+# Test files
+*_test_*
+test_*
+
+# Large data files
+*.xlsx
+*.xls
+*.csv.gz
+*.tsv.gz
+
+# BLAST databases
+*.ndb
+*.nhr
+*.nin
+*.njs
+*.nog
+*.nos
+*.not
+*.nsq
+*.ntf
+*.nto
+*.nsd
+*.nsi
+
+# CD-HIT output
+cdhit/
+*.clstr
+
+# Backup files
+*_backup.*
+*_modified.*
