@@ -22,7 +22,6 @@ oPool_design/
 ├── HA_screen/script/                          # Pipeline scripts (extract.py, iteration.py, etc.)
 ├── HA_screen/data/                            # Test datasets (TableS1.csv, etc.)
 ├── ui_results/                      # Pipeline outputs
-├── setup.py                         # Setup redirect script
 ├── launch_ui.py                     # UI launcher
 └── README.md                        # Pipeline-specific README
 ```
