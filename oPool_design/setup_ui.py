@@ -66,7 +66,7 @@ def create_directories():
     """Create necessary directories"""
     print("\n📁 Creating directories...")
     
-    directories = ['uploads', 'results', 'logs']
+    directories = ['uploads', 'ui_results', 'logs']
     
     for directory in directories:
         if not os.path.exists(directory):

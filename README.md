@@ -17,10 +17,8 @@ oPool<sup>+</sup> display combines oligo pool synthesis and mRNA display to cons
 2. the [oPool_display](oPool_display/) folder: screening/validation results and analyses.
 
 ## Environment setup 
-To create the same working environment:
-```bash
-conda env create -f environment.yml
-```
+Please proceed to [environment_setup.md](environment_setup.md) for detailed instructions on setting up your environment.
+
 ## Oligo pool seqeunce design
 
 Please proceed to the [oPool_design](oPool_design/) folder
