@@ -649,16 +649,17 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h5>Overlap Parameters</h5>
-                                    <div class="mb-3">
-                                        <label class="form-label">Input File:</label>
-                                        <select class="form-select" id="overlapInput">
-                                            <option value="">Select input file...</option>
-                                        </select>
-                                        <!-- Help for Step 5 Input -->
-                                        <div class="alert alert alert-warning step-help mt-2" role="alert">
-                                            <small><i class="fas fa-arrow-up"></i> <strong>Source:</strong> This should be a FASTA file from Step 2 (Iteration) - typically <code>iteration_*.fa</code></small><br>
-                                            <small><strong>Example:</strong> <a href="/view_file/ui_results/iteration_test_small.fa" class="text-decoration-none" target="_blank">iteration_test_small.fa</a></small>
-                                        </div>                                    </div>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Automatic Input:</strong> This step automatically uses the output from Step 4 (CD-HIT Result Selection).
+                                    </div>
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <strong>Prerequisites:</strong> Requires completed Step 4 with files in <code>ui_results/</code> directory:
+                                        <ul class="mb-0 mt-2">
+                                            <li><code>Re_assembled_*.fa</code> - FASTA files from CD-HIT result selection</li>
+                                        </ul>
+                                    </div>
                                     <div class="mb-3">
                                         <label class="form-label">Negative Control File:</label>
                                         <select class="form-select" id="overlapNegative">
@@ -666,23 +667,31 @@
                                         </select>
                                         <!-- Help for Negative Control File -->
                                         <div class="alert alert alert-secondary control-help mt-2" role="alert">
-                                            <small><i class="fas fa-file"></i> <strong>Negative Control:</strong> Same file type as input - used for BLAST similarity checking</small>
-                                        </div>                                    </div>
+                                            <small><i class="fas fa-file"></i> <strong>Negative Control:</strong> CSV file with negative control data (can be same as input from Step 1)</small>
+                                        </div>
+                                    </div>
                                     <div class="alert alert-info">
                                         <i class="fas fa-info-circle"></i>
                                         <strong>Note:</strong> This step generates possible overlap primers for each sequence 
                                         and checks similarity using BLAST+.
+                                    </div>                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Note:</strong> This step generates possible overlap primers for each sequence 
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0"><i class="fas fa-files"></i> Available Input Files from Step 4</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="overlapFileInfo" class="text-muted">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading file information...
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h5>Description</h5>
-                                    <p class="text-muted">
-                                        Generates overlap primers around CDR regions and selects the most unique overlap 
-                                        regions to minimize mismatches during PCR assembly.
-                                    </p>
-                                    <button class="btn btn-primary w-100" onclick="runOverlapCheck()">
-                                        <i class="fas fa-play"></i> Run Overlap Check
-                                    </button>
+                            </div>                                    </button>
                                 </div>
                             </div>
                             <div id="overlapResult" class="mt-3"></div>
@@ -697,28 +706,49 @@
                         <div class="step-content" id="step6">
                             <div class="row">
                                 <div class="col-md-6">
+                                <div class="col-md-6">
                                     <h5>Final Library Generation</h5>
                                     <p class="text-muted">
-                                        This final step truncates antibodies into segments based on the selected overlap regions 
+                                        This final step processes multiple files to truncate antibodies into segments based on the selected overlap regions 
                                         and adds replication primers for synthesis.
                                     </p>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Multi-File Processing:</strong> This step automatically processes all files in the Primer/ directory.
+                                    </div>
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <strong>Prerequisites:</strong> Requires completed Steps 1-5 with corresponding files in:
+                                        <ul class="mb-0 mt-2">
+                                            <li><code>Primer/</code> - Primer sequence files</li>
+                                            <li><code>ui_results/</code> - FASTA sequence files</li>
+                                            <li><code>ui_results/segs_id/</code> - Overlap analysis CSV files</li>
+                                        </ul>
+                                    </div>
                                     <div class="alert alert-success">
-                                        <i class="fas fa-check-circle"></i>
-                                        <strong>Ready for Synthesis:</strong> The output will be ready for DNA synthesis.
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0"><i class="fas fa-files"></i> Files to be Processed</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="chunkFileInfo" class="text-muted">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading file information...
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h5>Run Final Step</h5>
-                                    <button class="btn btn-success w-100" onclick="runChunkByOverlap()">
+                            </div>                                    <button class="btn btn-success w-100" onclick="runChunkByOverlap()">
                                         <i class="fas fa-rocket"></i> Generate Final Library
                                     </button>
                                     <div class="mt-3">
                                         <small class="text-muted">
-                                            This will create the final antibody library ready for synthesis.
+                                            This will process all available files and create the final antibody library ready for synthesis.
                                         </small>
                                     </div>
-                                </div>
-                            </div>
+                                </div>                            </div>
                             <div id="chunkResult" class="mt-3"></div>
                         </div>
                     </div>
@@ -983,23 +1013,100 @@
         }
         
         function runOverlapCheck() {
-            const data = {
-                input_file: document.getElementById('overlapInput').value,
-                negative_file: document.getElementById('overlapNegative').value
-            };
+            const negativeFile = document.getElementById("overlapNegative").value;
             
-            if (!data.input_file) {
-                alert('Please select an input file');
+            if (!negativeFile) {
+                alert("Please select a negative control file");
                 return;
             }
+            
+            // Automatically detect input files from Step 4 output
+            fetch("/get_overlap_input_files")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.input_files.length > 0) {
+                        // Use the first available input file (or could process all)
+                        const inputFile = data.input_files[0];
+                        const requestData = {
+                            input_file: inputFile,
+                            negative_file: negativeFile
+                        };
+                        runPipelineStep("overlap_check", requestData, "overlapResult");
+        }
+        
+        // Load file information for Overlap Check step
+        function loadOverlapFileInfo() {
+            fetch("/get_overlap_input_files")
+                .then(response => response.json())
+                .then(data => {
+                    const fileInfoDiv = document.getElementById("overlapFileInfo");
+                    if (data.success) {
+                        let html = `<div class="row">`;
+                        html += `<div class="col-md-6"><strong>📁 Available Input Files:</strong><br><small class="text-muted">${data.count} files from Step 4</small></div>`;
+                        html += `<div class="col-md-6"><strong>📊 Expected Output:</strong><br><small class="text-muted">CSV files in segs_id/ directory</small></div>`;
+                        html += `</div>`;
+                        if (data.count > 0) {
+                            html += `<div class="alert alert-success mt-2 mb-0"><i class="fas fa-check-circle"></i> Input files are available. Ready to process!</div>`;
+                            if (data.input_files.length > 0) {
+                                html += `<div class="mt-2"><strong>Files to be processed:</strong><ul class="mb-0">`;
+                                data.input_files.slice(0, 5).forEach(file => {
+                                    html += `<li><code>${file}</code></li>`;
+                                });
+                                if (data.input_files.length > 5) {
+                                    html += `<li><em>... and ${data.input_files.length - 5} more files</em></li>`;
+                                }
+                                html += `</ul></div>`;
+                            }
+                        } else {
+                            html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> No input files found. Please complete Step 4 first.</div>`;
+                        }
+                        fileInfoDiv.innerHTML = html;
+                    } else {
+                        fileInfoDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error loading file information: ${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("overlapFileInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                });
+        }                })
+                .catch(error => {
+                    alert(`Error detecting input files: ${error.message}`);
+                });            }
             
             runPipelineStep('overlap_check', data, 'overlapResult');
         }
         
         function runChunkByOverlap() {
-            runPipelineStep('chunk_by_overlap', {}, 'chunkResult');
+            const outputName = document.getElementById("outputName").value || "library";
+            runPipelineStep("chunk_by_overlap", { output_name: outputName }, "chunkResult");
         }
         
+        // Load file information for Chunk by Overlap step
+        function loadChunkFileInfo() {
+            fetch("/get_chunk_file_info")
+                .then(response => response.json())
+                .then(data => {
+                    const fileInfoDiv = document.getElementById("chunkFileInfo");
+                    if (data.success) {
+                        let html = `<div class="row">`;
+                        html += `<div class="col-md-4"><strong>📁 Primer Files:</strong><br><small class="text-muted">${data.primer_count} files</small></div>`;
+                        html += `<div class="col-md-4"><strong>🧬 Sequence Files:</strong><br><small class="text-muted">${data.sequence_count} files</small></div>`;
+                        html += `<div class="col-md-4"><strong>📊 Overlap Files:</strong><br><small class="text-muted">${data.overlap_count} files</small></div>`;
+                        html += `</div>`;
+                        if (data.primer_count > 0 && data.sequence_count > 0 && data.overlap_count > 0) {
+                            html += `<div class="alert alert-success mt-2 mb-0"><i class="fas fa-check-circle"></i> All required files are available. Ready to process!</div>`;
+                        } else {
+                            html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> Some required files are missing. Please complete previous steps first.</div>`;
+                        }
+                        fileInfoDiv.innerHTML = html;
+                    } else {
+                        fileInfoDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error loading file information: ${data.error}</div>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById("chunkFileInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                });
+        }        }        
         // Generic pipeline step runner
         function runPipelineStep(step, data, resultContainerId) {
             const resultContainer = document.getElementById(resultContainerId);
@@ -1060,10 +1167,11 @@
                 resultContainer.innerHTML = `
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle"></i>
-                        <strong>Error running ${step}!</strong><br>
-                        <small>${error.message}</small>
-                    </div>
-                `;
+        document.addEventListener("DOMContentLoaded", function() {
+            detectGermlinePath();
+            loadChunkFileInfo();
+            loadOverlapFileInfo();
+        });                `;
             });
         }
         
@@ -1119,10 +1227,10 @@
         }
         
         // Auto-detect germline path on page load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener("DOMContentLoaded", function() {
             detectGermlinePath();
-        });
-        
+            loadChunkFileInfo();
+        });        
         // File operations
         function previewFile(filename) {
             fetch(`/preview/${filename}`)

@@ -307,6 +307,33 @@ def run_chunk_by_overlap():
     
     return jsonify(result)
 
+@app.route("/get_overlap_input_files")
+def get_overlap_input_files():
+    """Get list of input files available for Step 5 (Overlap Check) from Step 4 output"""
+    try:
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        ui_results_dir = os.path.join(parent_dir, "ui_results")
+        
+        input_files = []
+        if os.path.exists(ui_results_dir):
+            # Look for Re_assembled_*.fa files (output from cdhit_result_modified.py)
+            for file in os.listdir(ui_results_dir):
+                if file.startswith("Re_assembled_") and file.endswith(".fa"):
+                    input_files.append(file)
+        
+        return jsonify({
+            "success": True,
+            "input_files": input_files,
+            "count": len(input_files)
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e),
+            "input_files": [],
+            "count": 0
+        })
+
 @app.route('/get_file_list')
 def get_file_list():
     """Get list of available files in upload and result folders"""
