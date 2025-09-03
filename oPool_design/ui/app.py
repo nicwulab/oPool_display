@@ -60,8 +60,7 @@ def scan_output_files(step_name, parent_dir):
     files_created = []
     
     if step_name == "Extract":
-        expected_files = [
-        ]
+        expected_files = []
         try:
             for file in os.listdir(os.path.join(parent_dir, "ui_results")):
                 if file.endswith("_output.csv"):
@@ -168,13 +167,6 @@ def run_pipeline_step(step_name, command, output_file=None):
             "error": str(e),
             "step": step_name,
             "files_created": []
-        }
-    except Exception as e:
-        return {
-            'success': False,
-            'error': str(e),
-            'step': step_name,
-            'files_created': []
         }
 
 @app.route('/')
@@ -500,7 +492,7 @@ def run_overlap_check():
     """Run the overlap check step"""
     try:
         data = request.json
-        input_file = data.get('input_file', '')  # This parameter is not used by the script
+        input_file = data.get('input_file', '')
         negative_file = data['negative_file']
         
         # Create step5 output directories
@@ -521,6 +513,22 @@ def run_overlap_check():
                 'files_created': []
             })
         
+        # Find input file
+        input_path = None
+        for search_dir in ["ui_results/step1", "uploads"]:
+            test_path = f"{search_dir}/{input_file}"
+            if os.path.exists(test_path):
+                input_path = test_path
+                break
+        
+        if not input_path:
+            return jsonify({
+                "success": False,
+                "step": "Overlap Check",
+                "error": f"Input file \"{input_file}\" not found. Please check the file exists.",
+                "files_created": []
+            })
+        
         # Try to read the group_size from Step 4
         group_size = 25  # default
         try:
@@ -529,7 +537,7 @@ def run_overlap_check():
         except (FileNotFoundError, ValueError):
             pass
         
-        cmd = f"python script/Overlap_check_modified.py -n {negative_path} -g {group_size}"
+        cmd = f"python script/Overlap_check_modified.py -i {input_path} -n {negative_path} -g {group_size}"
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
         
         if result.returncode == 0:

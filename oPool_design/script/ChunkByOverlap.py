@@ -37,14 +37,15 @@ def Segment_Seq(seq):
     Seg4 = "".join(np.array(list(Seqs[seq]))[Range4])
     return prim1.replace("U", "T"), prim2.replace("U", "T"), prim3.replace("U", "T"), Seg1.replace("U", "T"), Seg2.replace("U", "T"), Seg3.replace("U", "T"), Seg4.replace("U", "T")
 
-Lst_Seq = os.listdir('Primer')
+# Fixed paths - use correct directories
+Lst_Seq = os.listdir('ui_results/step5/primers')
 
 Result = []
 for group in Lst_Seq:
-    Seqs = Fa2Dict("ui_results/"+group)
+    Seqs = Fa2Dict("ui_results/step4/"+group)
     Seqs_ID = list(Seqs.keys())
-    Primer = Fa2Dict("Primer/"+group)
-    Primer_TB = pd.read_csv("ui_results/segs_id/"+ group + ".csv", index_col = 0)
+    Primer = Fa2Dict("ui_results/step5/primers/"+group)
+    Primer_TB = pd.read_csv("ui_results/step5/segs_id/"+ group + ".csv", index_col = 0)
     Primer_Slc = [":".join([str(ii) for ii in i]) for i in Primer_TB.to_numpy()]
     for seq in Seqs:
         prim1, prim2, prim3, Seg1, Seg2, Seg3, Seg4 = Segment_Seq(seq)
@@ -75,7 +76,7 @@ TB_req = pd.DataFrame(lst_all, columns = ['lib', 'seq'])
 
 Seq_id = TB_seg.Name[TB_seg.group == '0_Sim_6'].to_list()
 
-#Seqs = Fa2Dict("ui_results/Re_assembled_0_Sim_.6.fa")
+#Seqs = Fa2Dict("ui_results/step4/Re_assembled_0_Sim_.6.fa")
 
 from Bio.Data import CodonTable
 #from Bio.Alphabet import IUPAC
@@ -123,12 +124,6 @@ TB_ex = pd.DataFrame([['Random', i] for i in Rand_all], columns  = ['lib', 'seq'
 TB_req2 = pd.concat([TB_req, TB_ex])
 
 TB_req2.to_csv(f'ui_results/{output_name}_test_request.csv')
-
-
-
-
-
-
 
 # Create final sequence files in TSV and FASTA formats with pool information
 print(f"Creating final sequence files for {output_name}...")

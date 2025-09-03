@@ -633,21 +633,20 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h5>Overlap Parameters</h5>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Automatic Input:</strong> This step automatically uses the output from Step 4 (CD-HIT Result Selection).
+                                    <div class="mb-3">
+                                        <label class="form-label">Input File (from Step 1):</label>
+                                        <select class="form-select" id="overlapInput">
+                                            <option value="">Select input CSV file...</option>
+                                        </select>
+                                        <small class="text-muted">CSV file with antibody sequence data (same as used in Step 1)</small>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Negative Control File:</label>
                                         <select class="form-select" id="overlapNegative">
                                             <option value="">Select negative control file...</option>
                                         </select>
-                                        <!-- Help for Negative Control File -->
-                                        <div class="alert alert-secondary control-help mt-2" role="alert">
-                                            <small><i class="fas fa-file"></i> <strong>Negative Control:</strong> CSV file with negative control data (can be same as input from Step 1)</small>
-                                    </div>
-                                    </div>
-                                    <button class="btn btn-primary w-100" onclick="runOverlapCheck()">
+                                        <small class="text-muted">CSV file with negative control data (can be same as input file)</small>
+                                    </div>                                    <button class="btn btn-primary w-100" onclick="runOverlapCheck()">
                                         <i class="fas fa-play"></i> Run Overlap Check
                                     </button>
                                 </div>
@@ -1017,7 +1016,7 @@
             const fileNames = allFiles.map(f => f.name);
             
             // Update dropdown for Step 5 negative control (Step 4 now uses file upload)
-            ['overlapNegative'].forEach(id => {
+            ['overlapInput', 'overlapNegative'].forEach(id => {
                 const select = document.getElementById(id);
                 if (select && select.tagName === 'SELECT') {
                     const currentValue = select.value;
@@ -1322,34 +1321,25 @@
         }
         
         function runOverlapCheck() {
+            const inputFile = document.getElementById("overlapInput").value;
             const negativeFile = document.getElementById("overlapNegative").value;
+            
+            if (!inputFile) {
+                alert("Please select an input file");
+                return;
+            }
             
             if (!negativeFile) {
                 alert("Please select a negative control file");
                 return;
             }
             
-            // Automatically detect input files from Step 4 output
-            fetch("/get_overlap_input_files")
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.input_files.length > 0) {
-                        // Use the first available input file (or could process all)
-                        const inputFile = data.input_files[0]; // This is just a filename string
-                        const requestData = {
-                            input_file: inputFile, // Use the filename directly
-                            negative_file: negativeFile
-                        };
-                        runPipelineStep("overlap_check", requestData, "overlapResult");
-                    } else {
-                        alert("No input files found from Step 4. Please complete Step 4 first.");
-                    }
-                })
-                .catch(error => {
-                    alert(`Error detecting input files: ${error.message}`);
-                });
-        }
-        
+            const requestData = {
+                input_file: inputFile,
+                negative_file: negativeFile
+            };
+            runPipelineStep("overlap_check", requestData, "overlapResult");
+        }        
         function runChunkByOverlap() {
             const outputName = document.getElementById("chunkOutputName").value || "library";
             runPipelineStep("chunk_by_overlap", { output_name: outputName }, "chunkResult");
