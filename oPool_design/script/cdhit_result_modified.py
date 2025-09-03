@@ -56,7 +56,7 @@ def cdhit2DB(File):
     return df
 
 def CdBind(file):
-    File = 'cdhit/' + file
+    File = 'ui_results/step3/' + file
     N_sim = file.split("0.")[-1].split('.')[0]
     df = cdhit2DB(File)
     df.columns  = ['Name', 'Sim_.' + N_sim, 'Sampling', 'Trunk', 'Name_Trunk']
@@ -111,26 +111,29 @@ def Seq_grep(df_all, ID, N_Seq, Prefer_list, Neg_list):
     return Result_name
 
 def write_seq(df, Result_name, i, ID, Seq_dict):
-    seqs = [id[0].split(":")[0] for id in Result_name]
+    seqs = [id[0].split(":")[0] for id in Result_name if len(id) > 0]
     df = df[~df.ID.isin(seqs)]
-    with open(f"ui_results/Re_assembled_{i}_{ID}.fa", 'w') as F:
+    with open(f"ui_results/step4/Re_assembled_{i}_{ID}.fa", 'w') as F:
         F.close()
-    with open(f"ui_results/Re_assembled_{i}_{ID}.fa", 'a') as F:
+    with open(f"ui_results/step4/Re_assembled_{i}_{ID}.fa", 'a') as F:
         for seq_name in Result_name:
-            seq_name.sort()
-            F.write(">"+seq_name[0].split(':')[0] + "\n")
+            if len(seq_name) > 0:
+                seq_name.sort()
+                F.write(">"+seq_name[0].split(":")[0] + "\n")
             F.write(''.join([Seq_dict[i] for i in seq_name]) + "\n")
     return df
 
 def main():
     # combind all cd-hit cluster results
     df_lst = []
-    List = [i for i in os.listdir('cdhit') if '.clstr' in i]
+    List = [i for i in os.listdir('ui_results/step3') if '.clstr' in i]
     for i in List:
         df_lst += [CdBind(i)]
-
-    df_all = pd.concat([df_lst[0]] + [i.iloc[:,2] for i in df_lst[1:]] , axis = 1)
-    df_all['ID'] = [i.split(":")[0] for i in df_all.Name]
+    if len(df_lst) == 1:
+        df_all = df_lst[0]
+    else:
+        df_all = pd.concat([df_lst[0]] + [i.iloc[:,2] for i in df_lst[1:]] , axis = 1)
+    df_all["ID"] = [i.split(":")[0] for i in df_all.Name]
 
     # read the negative list
     TB_neg = pd.read_csv(NEGTIVE)
