@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file, flash, redirect, url_for, Response
 import os
 import subprocess
 import pandas as pd
@@ -8,7 +8,10 @@ from werkzeug.utils import secure_filename
 import json
 import threading
 import time
+import signal
+import psutil
 from pathlib import Path
+import uuid
 
 # Import configuration first
 from config import get_config, get_germline_path
@@ -21,8 +24,13 @@ app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
 
 # Configuration
 UPLOAD_FOLDER = str(config.UPLOAD_FOLDER)
+
+# Global variables to track running processes
+running_processes = {}
+process_outputs = {}  # Store process outputs for streaming
 RESULT_FOLDER = str(config.RESULT_FOLDER)
 ALLOWED_EXTENSIONS = config.ALLOWED_EXTENSIONS
+
 
 # Create directories if they don't exist
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -53,10 +61,6 @@ def scan_output_files(step_name, parent_dir):
     
     if step_name == "Extract":
         expected_files = [
-            ("ui_results/VH.fa", "Heavy chain sequences (FASTA)", "Intermediate"),
-            ("ui_results/VL.fa", "Light chain sequences (FASTA)", "Intermediate"),
-            ("ui_results/VH.tsv.gz", "Heavy chain PyIR annotations", "Intermediate"),
-            ("ui_results/VL.tsv.gz", "Light chain PyIR annotations", "Intermediate")
         ]
         try:
             for file in os.listdir(os.path.join(parent_dir, "ui_results")):
@@ -126,25 +130,45 @@ def run_pipeline_step(step_name, command, output_file=None):
     try:
         # Run command from the parent directory (oPool_design) not ui/
         parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        result = subprocess.run(command, shell=True, capture_output=True, text=True, cwd=parent_dir)
+        
+        # Start the process and track it
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, cwd=parent_dir)
+        running_processes[step_name] = process
+        
+        # Wait for the process to complete
+        stdout, stderr = process.communicate()
+        
+        # Remove from running processes
+        if step_name in running_processes:
+            del running_processes[step_name]
         
         # Scan for output files
         files_created = scan_output_files(step_name, parent_dir)
         
-        if result.returncode == 0:
+        if process.returncode == 0:
             return {
-                'success': True,
-                'output': result.stdout,
-                'step': step_name,
-                'files_created': files_created
+                "success": True,
+                "output": stdout,
+                "step": step_name,
+                "files_created": files_created
             }
         else:
             return {
-                'success': False,
-                'error': result.stderr,
-                'step': step_name,
-                'files_created': files_created
+                "success": False,
+                "error": stderr,
+                "step": step_name,
+                "files_created": files_created
             }
+    except Exception as e:
+        # Remove from running processes if there was an error
+        if step_name in running_processes:
+            del running_processes[step_name]
+        return {
+            "success": False,
+            "error": str(e),
+            "step": step_name,
+            "files_created": []
+        }
     except Exception as e:
         return {
             'success': False,
@@ -181,70 +205,76 @@ def upload_file():
 
 @app.route('/run_extract', methods=['POST'])
 def run_extract():
-    data = request.get_json()
-    
-    # Build command for extract.py
-    input_file = data['input_file']
-    # If it's just a filename, assume it's in uploads directory
-    if not os.path.isabs(input_file):
-        input_file = os.path.join(app.config['UPLOAD_FOLDER'], input_file)
-    
-    # Make sure the file exists
-    if not os.path.exists(input_file):
-        return jsonify({
-            'success': False,
-            'error': f'Input file not found: {input_file}',
-            'step': 'Extract'
-        })
-    
-    cmd = f"python script/extract.py -i {input_file}"
-    
-    v_list = data.get('v_list', config.DEFAULT_V_GENE_FAMILIES)
-    d_list = data.get('d_list', config.DEFAULT_D_GENE_FAMILIES)
-    
-    if v_list:
-        cmd += f" -v {' '.join(v_list)}"
-    
-    if d_list:
-        cmd += f" -d {' '.join(d_list)}"
-    
-    # Get germline path - use provided path or auto-detect
-    germline_path = data.get('germline_path')
-    if not germline_path:
-        germline_path = get_germline_path()
-        if not germline_path:
+    """Run the extract pipeline step"""
+    try:
+        data = request.json
+        input_file = data['input_file']
+        v_list = data.get('v_list', ['IGHV1-69', 'IGHV6-1', 'IGHV1-18'])
+        d_list = data.get('d_list', ['IGHD3-9'])
+        germline_path = data.get('germline_path', '')
+        skip_clonotype_filter = data.get('skip_clonotype_filter', False)
+        
+        # Create step1 output directory
+        os.makedirs('ui_results/step1', exist_ok=True)
+        
+        # Construct output filename
+        base_name = os.path.splitext(input_file)[0]
+        output_file = f"ui_results/step1/{base_name}_output.csv"
+        
+        # Run extract command
+        cmd_parts = [
+            "python script/extract.py",
+            f"-i uploads/{input_file}",
+            f"-o {output_file}"
+        ]
+        
+        if v_list:
+            cmd_parts.append(f"-v {' '.join(v_list)}")
+        if d_list:
+            cmd_parts.append(f"-d {' '.join(d_list)}")
+        if germline_path:
+            cmd_parts.append(f"-g {germline_path}")
+        if skip_clonotype_filter:
+            cmd_parts.append("--skip-clonotype")
+            
+        cmd = " ".join(cmd_parts)
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
+        
+        if result.returncode == 0:
+            # Try to read and preview the output
+            if os.path.exists(output_file):
+                df = pd.read_csv(output_file)
+                return jsonify({
+                    'success': True,
+                    'step': 'Extract',
+                    'message': 'Extract completed successfully',
+                    'output_file': output_file,
+                    'total_rows': len(df),
+                    'preview': df.head(10).fillna('').to_dict('records'),
+                    'files_created': scan_output_files('Extract', os.getcwd())
+                })
+            else:
+                return jsonify({
+                    'success': True,
+                    'step': 'Extract',
+                    'message': 'Extract completed but output file not found',
+                    'files_created': scan_output_files('Extract', os.getcwd())
+                })
+        else:
             return jsonify({
                 'success': False,
-                'error': 'No germline database path found. Please set GERMLINE_DB_PATH environment variable or install PyIR.',
-                'step': 'Extract'
+                'step': 'Extract',
+                'error': result.stderr or 'Unknown error occurred',
+                'files_created': scan_output_files('Extract', os.getcwd())
             })
-    
-    if germline_path:
-        cmd += f" -g {germline_path}"
-    
-    # Add clonotype filter parameter
-    skip_clonotype_filter = data.get('skip_clonotype_filter', config.DEFAULT_SKIP_CLONOTYPE_FILTER)
-    if skip_clonotype_filter:
-        cmd += " --skip-clonotype-filter"
-    
-    output_file = os.path.join(app.config['RESULT_FOLDER'], 'extract_output.csv')
-    cmd += f" -o {output_file}"
-    
-    result = run_pipeline_step('Extract', cmd, output_file)
-    
-    if result['success']:
-        # Try to read the output file to show preview
-        try:
-            df = pd.read_csv(output_file)
-            # Replace NaN values with None for JSON compatibility
-            df_preview = df.head(10).fillna('')
-            result['preview'] = df_preview.to_dict('records')
-            result['total_rows'] = len(df)
-        except:
-            result['preview'] = []
-            result['total_rows'] = 0
-    
-    return jsonify(result)
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'step': 'Extract',
+            'error': str(e),
+            'files_created': []
+        })
 
 @app.route('/run_iteration', methods=['POST'])
 def run_iteration():
@@ -265,37 +295,267 @@ def run_iteration():
 
 @app.route('/run_cdhit', methods=['POST'])
 def run_cdhit():
-    data = request.get_json()
+    """Run the CD-HIT clustering step and return process ID for streaming"""
+    try:
+        data = request.get_json()
+        
+        # Get parameters
+        min_threshold = data.get('min_threshold', 0.6)
+        max_threshold = data.get('max_threshold', 0.85)
+        increment = data.get('increment', 0.05)
+        
+        # Generate unique process ID
+        process_id = str(uuid.uuid4())
+        
+        # Run cd-hit script with parameters
+        cmd = f"bash script/cd-hit.sh {min_threshold} {max_threshold} {increment}"
+        
+        # Start the process in the background
+        parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        process = subprocess.Popen(
+            cmd,
+            shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            cwd=parent_dir,
+            bufsize=0,  # Unbuffered
+            universal_newlines=True
+        )
+        
+        # Store process information
+        running_processes[process_id] = process
+        process_outputs[process_id] = []
+        
+        # Start a thread to read output
+        def read_output():
+            try:
+                for line in iter(process.stdout.readline, ''):
+                    if line:
+                        # Keep line breaks for proper display
+                        process_outputs[process_id].append(line.rstrip('\n\r'))
+                process.stdout.close()
+                process.wait()
+                # Mark process as completed
+                if process_id in running_processes:
+                    del running_processes[process_id]
+            except Exception as e:
+                # Handle any errors in reading output
+                process_outputs[process_id].append(f"Error reading output: {str(e)}")
+                if process_id in running_processes:
+                    del running_processes[process_id]
+        
+        thread = threading.Thread(target=read_output)
+        thread.daemon = True
+        thread.start()
+        
+        return jsonify({
+            'success': True,
+            'process_id': process_id,
+            'message': 'CD-HIT process started successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        })
+
+@app.route('/stream_output/<process_id>')
+def stream_output(process_id):
+    """Stream real-time output from a running process"""
+    def generate():
+        last_index = 0
+        while True:
+            if process_id in process_outputs:
+                current_outputs = process_outputs[process_id]
+                if len(current_outputs) > last_index:
+                    # Send new lines with the format the frontend expects
+                    for i in range(last_index, len(current_outputs)):
+                        content = current_outputs[i] + '\n'
+                        yield f"data: {json.dumps({'type': 'output', 'content': content})}\n\n"
+                    last_index = len(current_outputs)
+                
+                # Check if process is still running
+                if process_id not in running_processes:
+                    # Process completed, send final status
+                    yield f"data: {json.dumps({'type': 'done', 'return_code': 0})}\n\n"
+                    break
+            else:
+                # Process not found
+                yield f"data: {json.dumps({'type': 'error', 'content': 'Process not found'})}\n\n"
+                break
+            
+            time.sleep(0.1)  # Check more frequently (every 100ms)
     
-    # Run cd-hit script
-    cmd = f"bash script/cd-hit.sh"
-    
-    result = run_pipeline_step('CD-HIT', cmd)
-    
-    return jsonify(result)
+    return Response(generate(), mimetype='text/event-stream')
+
+@app.route('/abort_process/<process_id>', methods=['POST'])
+def abort_process(process_id):
+    """Abort a running process"""
+    try:
+        if process_id in running_processes:
+            process = running_processes[process_id]
+            process.terminate()
+            del running_processes[process_id]
+            if process_id in process_outputs:
+                del process_outputs[process_id]
+            return jsonify({'success': True, 'message': 'Process aborted'})
+        else:
+            return jsonify({'success': False, 'error': 'Process not found'})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
 @app.route('/run_cdhit_result', methods=['POST'])
 def run_cdhit_result():
-    data = request.get_json()
-    
-    group_size = data.get('group_size', config.DEFAULT_GROUP_SIZE)
-    num_groups = data.get('num_groups', config.DEFAULT_NUM_GROUPS)
-    num_negative = data.get('num_negative', config.DEFAULT_NUM_NEGATIVE)
-    cmd = f"python script/cdhit_result_modified.py -i {data['input_file']} -n {data['negative_file']} -gs {group_size} -ng {num_groups} -nn {num_negative}"
-    
-    result = run_pipeline_step('CD-HIT Result Selection', cmd)
-    
-    return jsonify(result)
+    """Run the CD-HIT result selection step"""
+    try:
+        data = request.json
+        negative_file = data.get('negative_file')
+        group_size = data.get('group_size', 25)
+        num_groups = data.get('num_groups', 12)
+        num_negative = data.get('num_negative', 2)
+        
+        # Create step4 output directory
+        os.makedirs('ui_results/step4', exist_ok=True)
+        
+        # Save group_size for Step 5 to use
+        with open('ui_results/step4/group_size.txt', 'w') as f:
+            f.write(str(group_size))
+        
+        # Input: Always use the most recent FASTA file from step2 (segmented sequences)
+        step2_dir = "ui_results/step2"
+        input_path = None
+        if os.path.exists(step2_dir):
+            fasta_files = [f for f in os.listdir(step2_dir) if f.endswith('.fa')]
+            if fasta_files:
+                fasta_files.sort(key=lambda x: os.path.getmtime(os.path.join(step2_dir, x)), reverse=True)
+                input_path = f"ui_results/step2/{fasta_files[0]}"
+        
+        if not input_path:
+            return jsonify({
+                'success': False,
+                'step': 'CD-HIT Result Selection',
+                'error': 'No FASTA file found in step2. Please complete Step 2 (Iteration) first.',
+                'files_created': []
+            })
+            
+        # Negative: Use user-selected CSV file
+        if not negative_file:
+            return jsonify({
+                'success': False,
+                'step': 'CD-HIT Result Selection',
+                'error': 'No negative control file specified. Please select a negative control file.',
+                'files_created': []
+            })
+        
+        # Find the negative file in appropriate directories
+        negative_path = None
+        for search_dir in ['ui_results/step1', 'uploads']:
+            test_path = f"{search_dir}/{negative_file}"
+            if os.path.exists(test_path):
+                negative_path = test_path
+                break
+        
+        if not negative_path:
+            return jsonify({
+                'success': False,
+                'step': 'CD-HIT Result Selection',
+                'error': f'Negative control file "{negative_file}" not found. Please check the file exists.',
+                'files_created': []
+            })
+        
+        cmd = f"python script/cdhit_result_modified.py -i {input_path} -n {negative_path} -gs {group_size} -ng {num_groups} -nn {num_negative}"
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
+        
+        if result.returncode == 0:
+            return jsonify({
+                'success': True,
+                'step': 'CD-HIT Result Selection',
+                'message': f'CD-HIT result selection completed successfully using {os.path.basename(input_path)} and {os.path.basename(negative_path)}',
+                'files_created': scan_output_files('cdhit_result', os.getcwd()),
+                'input_used': input_path,
+                'negative_used': negative_path
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'step': 'CD-HIT Result Selection',
+                'error': result.stderr or result.stdout or 'Unknown error occurred',
+                'files_created': scan_output_files('cdhit_result', os.getcwd()),
+                'input_attempted': input_path,
+                'negative_attempted': negative_path
+            })
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'step': 'CD-HIT Result Selection',
+            'error': str(e),
+            'files_created': []
+        })
 
 @app.route('/run_overlap_check', methods=['POST'])
 def run_overlap_check():
-    data = request.get_json()
-    
-    cmd = f"python script/Overlap_check_modified.py -i {data['input_file']} -n {data['negative_file']}"
-    
-    result = run_pipeline_step('Overlap Check', cmd)
-    
-    return jsonify(result)
+    """Run the overlap check step"""
+    try:
+        data = request.json
+        input_file = data.get('input_file', '')  # This parameter is not used by the script
+        negative_file = data['negative_file']
+        
+        # Create step5 output directories
+        os.makedirs('ui_results/step5/primers', exist_ok=True)
+        os.makedirs('ui_results/step5/blast', exist_ok=True)
+        os.makedirs('ui_results/step5/segs_id', exist_ok=True)
+        
+        # Find negative file
+        negative_path = f"ui_results/step1/{negative_file}" if not negative_file.startswith('ui_results') else negative_file
+        if not os.path.exists(negative_path):
+            negative_path = f"uploads/{negative_file}"
+        
+        if not os.path.exists(negative_path):
+            return jsonify({
+                'success': False,
+                'step': 'Overlap Check',
+                'error': f'Negative control file "{negative_file}" not found',
+                'files_created': []
+            })
+        
+        # Try to read the group_size from Step 4
+        group_size = 25  # default
+        try:
+            with open('ui_results/step4/group_size.txt', 'r') as f:
+                group_size = int(f.read().strip())
+        except (FileNotFoundError, ValueError):
+            pass
+        
+        cmd = f"python script/Overlap_check_modified.py -n {negative_path} -g {group_size}"
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=os.getcwd())
+        
+        if result.returncode == 0:
+            return jsonify({
+                'success': True,
+                'step': 'Overlap Check',
+                'message': f'Overlap check completed successfully using {negative_file}',
+                'files_created': scan_output_files('overlap_check', os.getcwd()),
+                'negative_used': negative_path
+            })
+        else:
+            return jsonify({
+                'success': False,
+                'step': 'Overlap Check',
+                'error': result.stderr or 'Unknown error occurred',
+                'files_created': scan_output_files('overlap_check', os.getcwd()),
+                'negative_attempted': negative_path
+            })
+            
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'step': 'Overlap Check',
+            'error': str(e),
+            'files_created': []
+        })
 
 @app.route('/run_chunk_by_overlap', methods=['POST'])
 def run_chunk_by_overlap():
@@ -316,10 +576,12 @@ def get_overlap_input_files():
         
         input_files = []
         if os.path.exists(ui_results_dir):
-            # Look for Re_assembled_*.fa files (output from cdhit_result_modified.py)
-            for file in os.listdir(ui_results_dir):
-                if file.startswith("Re_assembled_") and file.endswith(".fa"):
-                    input_files.append(file)
+            # Look for Re_assembled_*.fa files in step4 directory (output from cdhit_result_modified.py)
+            step4_dir = os.path.join(ui_results_dir, "step4")
+            if os.path.exists(step4_dir):
+                for file in os.listdir(step4_dir):
+                    if file.startswith("Re_assembled_") and file.endswith(".fa"):
+                        input_files.append(file)
         
         return jsonify({
             "success": True,
@@ -336,10 +598,12 @@ def get_overlap_input_files():
 
 @app.route('/get_file_list')
 def get_file_list():
-    """Get list of available files in upload and result folders"""
+    """Get list of available files in upload, result, and ui_results folders"""
     upload_files = []
     result_files = []
+    ui_results_files = []
     
+    # Scan upload folder
     for filename in os.listdir(app.config['UPLOAD_FOLDER']):
         if allowed_file(filename):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -347,9 +611,11 @@ def get_file_list():
                 'name': filename,
                 'path': filepath,
                 'size': os.path.getsize(filepath),
-                'modified': time.ctime(os.path.getmtime(filepath))
+                'modified': time.ctime(os.path.getmtime(filepath)),
+                'step': 'uploads'
             })
     
+    # Scan result folder
     for filename in os.listdir(app.config['RESULT_FOLDER']):
         if allowed_file(filename):
             filepath = os.path.join(app.config['RESULT_FOLDER'], filename)
@@ -357,12 +623,33 @@ def get_file_list():
                 'name': filename,
                 'path': filepath,
                 'size': os.path.getsize(filepath),
-                'modified': time.ctime(os.path.getmtime(filepath))
+                'modified': time.ctime(os.path.getmtime(filepath)),
+                'step': 'results'
             })
+    
+    # Scan ui_results directories
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    ui_results_dir = os.path.join(parent_dir, "ui_results")
+    
+    if os.path.exists(ui_results_dir):
+        for step_dir in os.listdir(ui_results_dir):
+            step_path = os.path.join(ui_results_dir, step_dir)
+            if os.path.isdir(step_path):
+                for filename in os.listdir(step_path):
+                    if allowed_file(filename):
+                        filepath = os.path.join(step_path, filename)
+                        ui_results_files.append({
+                            'name': filename,
+                            'path': filepath,
+                            'size': os.path.getsize(filepath),
+                            'modified': time.ctime(os.path.getmtime(filepath)),
+                            'step': step_dir
+                        })
     
     return jsonify({
         'upload_files': upload_files,
-        'result_files': result_files
+        'result_files': result_files,
+        'ui_results_files': ui_results_files
     })
 
 @app.route('/download/<filename>')

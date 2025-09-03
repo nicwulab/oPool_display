@@ -198,40 +198,7 @@
         
         .status-success {
             background: rgba(39, 174, 96, 0.2);
-        
-        /* Help section styling */
-        .alert-info.file-help {
-            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
-            border: 1px solid #2196f3;
-            border-left: 4px solid #2196f3;
-        }
-        
-        .alert-warning.step-help {
-            background: linear-gradient(135deg, #fff3e0, #fce4ec);
-            border: 1px solid #ff9800;
-            border-left: 4px solid #ff9800;
-        }
-        
-        .alert-secondary.control-help {
-            background: linear-gradient(135deg, #f5f5f5, #e8f5e8);
-            border: 1px solid #6c757d;
-            border-left: 4px solid #6c757d;
-        }
-        
-        .help-links {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        
-        .test-files-card {
-            transition: transform 0.2s ease;
-        }
-        
-        .test-files-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }            color: var(--success-color);
+            color: var(--success-color);
         }
         
         .status-error {
@@ -305,6 +272,25 @@
             margin-bottom: 20px;
         }
         
+        /* Help section styling */
+        .alert-warning.step-help {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border: 1px solid #ff9800;
+            border-left: 4px solid #ff9800;
+        }
+        
+        .alert-secondary.control-help {
+            background: linear-gradient(135deg, #f5f5f5, #e8f5e8);
+            border: 1px solid #6c757d;
+            border-left: 4px solid #6c757d;
+        }
+        
+        .alert-info.file-help {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border: 1px solid #2196f3;
+            border-left: 4px solid #2196f3;
+        }
+        
         @media (max-width: 768px) {
             .main-container {
                 margin: 10px;
@@ -332,7 +318,7 @@
         <div class="container-fluid">
             <div class="row">
                 <!-- Main Content -->
-                <div class="col-lg-9">
+                <div class="col-lg-8">
                     <!-- Pipeline Overview -->
                     <div class="pipeline-flow">
                         <h4><i class="fas fa-project-diagram"></i> Pipeline Overview</h4>
@@ -341,61 +327,7 @@
                             <div>Data Filtering & Extraction</div>
                             <i class="fas fa-arrow-right flow-arrow"></i>
                         </div>
-                <!-- Global Test Files Reference -->
-                <div class="row mb-4">
-                    <div class="col-12">
-                        <div class="card border-info test-files-card">
-                            <div class="card-header bg-info text-white">
-                                <h5 class="mb-0"><i class="fas fa-folder-open"></i> Available Test Files & Examples</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <h6 class="text-primary">📁 Input Files (Step 1)</h6>
-                                        <div class="list-group list-group-flush">
-                                            <a href="/view_file/uploads/TableS1_full.csv" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-csv text-success"></i> TableS1_full.csv <small class="text-muted">(Full dataset)</small>
-                                            </a>
-                                            <a href="/view_file/HA_screen/data/TableS1.csv" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-csv text-success"></i> TableS1.csv <small class="text-muted">(Original)</small>
-                                            </a>
-                                            <a href="/view_file/uploads/complete_test_dataset.csv" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-csv text-success"></i> complete_test_dataset.csv <small class="text-muted">(Test subset)</small>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h6 class="text-warning">🔄 Intermediate Files</h6>
-                                        <div class="list-group list-group-flush">
-                                            <a href="/view_file/ui_results/TableS1_full_output.csv" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-csv text-info"></i> TableS1_full_output.csv <small class="text-muted">(Step 1 → 2)</small>
-                                            </a>
-                                            <a href="/view_file/ui_results/iteration_test_small.fa" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-alt text-info"></i> iteration_test_small.fa <small class="text-muted">(Step 2 → 3)</small>
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <h6 class="text-success">📤 Final Output Examples</h6>
-                                        <div class="list-group list-group-flush">
-                                            <a href="/view_file/ui_results/test_final_oPool_design.csv" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-csv text-success"></i> test_final_oPool_design.csv
-                                            </a>
-                                            <a href="/view_file/ui_results/test_final_final_sequences.tsv" class="list-group-item list-group-item-action" target="_blank">
-                                                <i class="fas fa-file-alt text-success"></i> test_final_sequences.tsv
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-3 p-2 bg-light rounded">
-                                    <small class="text-muted">
-                                        <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Click on any file above to preview its format and content. This helps understand the expected data structure for each pipeline step.
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>                        <div class="flow-step">
+                        <div class="flow-step">
                             <div class="flow-number">2</div>
                             <div>Sequence Segments Iteration</div>
                             <i class="fas fa-arrow-right flow-arrow"></i>
@@ -441,7 +373,7 @@
                                     </div>
                                     <div id="fileInfo" class="mt-3" style="display: none;"></div>
                                     <!-- File Format Help Section -->
-                                    <div class="alert alert alert-info file-help mt-3" role="alert">
+                                    <div class="alert alert-info file-help mt-3" role="alert">
                                         <h6><i class="fas fa-info-circle"></i> Input File Requirements</h6>
                                         <p class="mb-2"><strong>Expected Format:</strong> Excel (.xlsx), CSV (.csv), or TSV (.tsv) file containing antibody sequence data.</p>
                                         <p class="mb-2"><strong>Required Columns:</strong> Must include columns for heavy chain and light chain sequences (VH, VL), and antibody identifiers.</p>
@@ -455,7 +387,8 @@
                                             </a>
                                         </div>
                                         <small class="text-muted">📄 <strong>Source:</strong> This is your starting dataset - typically experimental antibody data from screening or discovery experiments.</small>
-                                    </div>                                </div>
+                                    </div>
+                                </div>
                                 <div class="col-md-6">
                                     <h5>Filtering Parameters</h5>
                                     <div class="mb-3">
@@ -510,43 +443,38 @@
                                 <div class="col-md-6">
                                     <h5>Input Parameters</h5>
                                     <div class="mb-3">
-                                        <label class="form-label">Input File:</label>
-                                        <select class="form-select" id="iterationInput">
-                                            <option value="">Select input file...</option>
-                                        </select>
-                                        <!-- Help for Step 2 Input -->
-                                        <div class="alert alert alert-warning step-help mt-2" role="alert">
-                                            <small><i class="fas fa-arrow-up"></i> <strong>Source:</strong> This file comes from Step 1 (Extract) output - typically named <code>*_output.csv</code></small><br>
-                                            <small><strong>Example:</strong> <a href="/view_file/ui_results/TableS1_full_output.csv" class="text-decoration-none" target="_blank">TableS1_full_output.csv</a></small>
-                                        </div>                                    </div>
-                                    <div class="mb-3">
                                         <label class="form-label">Pool Size:</label>
                                         <input type="number" class="form-control" id="poolSize" value="2000000" min="1000" placeholder="2000000">
                                         <small class="text-muted">Number of random sequences to generate</small>
                                     </div>
                                     <div class="mb-3">
-                                        <label class="form-label">Negative Control File:</label>
-                                        <select class="form-select" id="negativeFile">
-                                            <option value="">Select negative control file...</option>
-                                        </select>
-                                        <!-- Help for Step 2 Negative Control -->
-                                        <div class="alert alert alert-secondary control-help mt-2" role="alert">
-                                            <small><i class="fas fa-file-csv"></i> <strong>Optional:</strong> CSV file with negative control data (can be same as input file)</small>
-                                        </div>                                    </div>
-                                    <div class="mb-3">
                                         <label class="form-label">Output File:</label>
                                         <input type="text" class="form-control" id="iterationOutput" value="iteration_output.fa">
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5>Description</h5>
-                                    <p class="text-muted">
-                                        This step generates random codon sequences for each amino acid to reduce similarity 
-                                        among nucleotide sequences. Each antibody is truncated into 8 segments for increased diversity.
-                                    </p>
                                     <button class="btn btn-primary w-100" onclick="runIteration()">
                                         <i class="fas fa-play"></i> Run Iteration
                                     </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Status</h5>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Automatic Input:</strong> This step automatically uses the most recent output from Step 1 (Extract).
+                                    </div>
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0"><i class="fas fa-files"></i> Input Files from Step 1</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="iterationInputInfo" class="text-muted">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading file information...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted mt-3">
+                                        This step generates random codon sequences for each amino acid to reduce similarity 
+                                        among nucleotide sequences. Each antibody is truncated into 8 segments for increased diversity.
+                                    </p>
                                 </div>
                             </div>
                             <div id="iterationResult" class="mt-3"></div>
@@ -566,25 +494,65 @@
                                         This step groups similar sequences using CD-HIT based on sequence similarity. 
                                         It takes the output from Step 2 and clusters segments based on similarities.
                                     </p>
-                                    <div class="alert alert-info">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Min Threshold:</label>
+                                            <input type="number" class="form-control form-control-sm" id="cdhitMinThreshold" value="0.6" min="0.1" max="1.0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Max Threshold:</label>
+                                            <input type="number" class="form-control form-control-sm" id="cdhitMaxThreshold" value="0.85" min="0.1" max="1.0" step="0.01">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Increment:</label>
+                                            <input type="number" class="form-control form-control-sm" id="cdhitIncrement" value="0.05" min="0.01" max="0.1" step="0.01">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Similarity thresholds for clustering (0.6 to 0.85 in 0.05 increments by default)</small>
+                                    <div class="alert alert-info mt-2">
                                         <i class="fas fa-info-circle"></i>
                                         <strong>Note:</strong> This step may take a long time depending on the dataset size. 
-                                        Check the cd-hit.log file for progress.
+                                        Real-time progress will be shown in the output window.
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <h5>Run CD-HIT</h5>
-                                    <button class="btn btn-primary w-100" onclick="runCDHit()">
+                                    <div class="btn-group w-100" role="group">
+                                        <button class="btn btn-primary" id="cdhitRunBtn" onclick="runCDHit()" style="flex: 1;">
                                         <i class="fas fa-play"></i> Run CD-HIT Clustering
                                     </button>
+                                        <button class="btn btn-danger" id="cdhitAbortBtn" onclick="abortCDHit()" style="display: none;">
+                                            <i class="fas fa-stop"></i> Abort
+                                        </button>
+                                    </div>
                                     <div class="mt-3">
                                         <small class="text-muted">
-                                            Results will be stored in the 'cdhit' directory.
+                                            Results will be stored in ui_results/step3/.
                                         </small>
                                     </div>
                                 </div>
                             </div>
                             <div id="cdhitResult" class="mt-3"></div>
+                            
+                            <!-- Real-time Output Window -->
+                            <div id="cdhitOutputWindow" class="mt-3" style="display: none;">
+                                <div class="card">
+                                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-0"><i class="fas fa-terminal"></i> CD-HIT Output</h6>
+                                        <button class="btn btn-sm btn-outline-light" onclick="toggleOutputWindow('cdhitOutputWindow')">
+                                            <i class="fas fa-window-minimize"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <pre id="cdhitOutputContent" class="bg-dark text-light p-3 m-0" style="height: 300px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 12px;"></pre>
+                                    </div>
+                                    <div class="card-footer bg-light">
+                                        <small class="text-muted">
+                                            <span id="cdhitOutputStatus"><i class="fas fa-spinner fa-spin"></i> Running...</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -597,18 +565,6 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <h5>Selection Parameters</h5>
-                                    <div class="mb-3">
-                                        <label class="form-label">Input File:</label>
-                                        <select class="form-select" id="cdhitInput">
-                                            <option value="">Select input file...</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label">Negative Control File:</label>
-                                        <select class="form-select" id="cdhitNegative">
-                                            <option value="">Select negative control file...</option>
-                                        </select>
-                                    </div>
                                     <div class="mb-3">
                                         <label class="form-label">Group Size:</label>
                                         <input type="number" class="form-control" id="groupSize" value="25" min="1" placeholder="25">
@@ -624,16 +580,44 @@
                                         <input type="number" class="form-control" id="numNegative" value="2" min="0" placeholder="2">
                                         <small class="text-muted">Number of negative control sequences per group</small>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5>Description</h5>
-                                    <p class="text-muted">
-                                        This step selects one sequence from each CD-HIT cluster and reassembles antibodies. 
-                                        It creates groups of sequences for assembly libraries.
-                                    </p>
                                     <button class="btn btn-primary w-100" onclick="runCDHitResult()">
                                         <i class="fas fa-play"></i> Run Selection
                                     </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Negative Control File</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Upload Negative Control File:</label>
+                                        <div class="file-upload-area" id="cdhitNegativeUploadArea">
+                                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                                            <p class="mb-2">Drag and drop your negative control CSV file here</p>
+                                            <p class="text-muted">or</p>
+                                            <input type="file" id="cdhitNegativeFileInput" class="d-none" accept=".csv,.tsv">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="document.getElementById('cdhitNegativeFileInput').click()">
+                                                <i class="fas fa-folder-open"></i> Browse Files
+                                            </button>
+                                        </div>
+                                        <div id="cdhitNegativeFileInfo" class="mt-2" style="display: none;"></div>
+                                        <small class="text-muted">CSV file with negative control antibody data</small>
+                                    </div>
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i>
+                                        <strong>Automatic Input:</strong> Uses most recent FASTA from Step 2 (Iteration) for sequence data.
+                                    </div>
+                                    <div class="card border-info">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0"><i class="fas fa-files"></i> Input Files Detection</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div id="cdhitResultInputInfo" class="text-muted">
+                                                <i class="fas fa-spinner fa-spin"></i> Loading file information...
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-muted mt-3">
+                                        This step selects one sequence from each CD-HIT cluster and reassembles antibodies. 
+                                        It creates groups of sequences for assembly libraries.
+                                    </p>
                                 </div>
                             </div>
                             <div id="cdhitResultResult" class="mt-3"></div>
@@ -653,45 +637,32 @@
                                         <i class="fas fa-info-circle"></i>
                                         <strong>Automatic Input:</strong> This step automatically uses the output from Step 4 (CD-HIT Result Selection).
                                     </div>
-                                    <div class="alert alert-warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <strong>Prerequisites:</strong> Requires completed Step 4 with files in <code>ui_results/</code> directory:
-                                        <ul class="mb-0 mt-2">
-                                            <li><code>Re_assembled_*.fa</code> - FASTA files from CD-HIT result selection</li>
-                                        </ul>
-                                    </div>
                                     <div class="mb-3">
                                         <label class="form-label">Negative Control File:</label>
                                         <select class="form-select" id="overlapNegative">
                                             <option value="">Select negative control file...</option>
                                         </select>
                                         <!-- Help for Negative Control File -->
-                                        <div class="alert alert alert-secondary control-help mt-2" role="alert">
+                                        <div class="alert alert-secondary control-help mt-2" role="alert">
                                             <small><i class="fas fa-file"></i> <strong>Negative Control:</strong> CSV file with negative control data (can be same as input from Step 1)</small>
-                                        </div>
                                     </div>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Note:</strong> This step generates possible overlap primers for each sequence 
-                                        and checks similarity using BLAST+.
-                                    </div>                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Note:</strong> This step generates possible overlap primers for each sequence 
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-12">
+                                    </div>
+                                    <button class="btn btn-primary w-100" onclick="runOverlapCheck()">
+                                        <i class="fas fa-play"></i> Run Overlap Check
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Status</h5>
                                     <div class="card border-info">
                                         <div class="card-header bg-info text-white">
-                                            <h6 class="mb-0"><i class="fas fa-files"></i> Available Input Files from Step 4</h6>
+                                            <h6 class="mb-0"><i class="fas fa-files"></i> Input Files from Step 4</h6>
                                         </div>
                                         <div class="card-body">
-                                            <div id="overlapFileInfo" class="text-muted">
+                                            <div id="overlapInputInfo" class="text-muted">
                                                 <i class="fas fa-spinner fa-spin"></i> Loading file information...
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>                                    </button>
                                 </div>
                             </div>
                             <div id="overlapResult" class="mt-3"></div>
@@ -706,29 +677,18 @@
                         <div class="step-content" id="step6">
                             <div class="row">
                                 <div class="col-md-6">
+                                    <h5>Output Configuration</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Output Name Prefix:</label>
+                                        <input type="text" class="form-control" id="chunkOutputName" value="library" placeholder="library">
+                                        <small class="text-muted">Prefix for output file names (e.g., "library" → "library_final_oPool_design.csv")</small>
+                                    </div>
+                                    <button class="btn btn-success w-100" onclick="runChunkByOverlap()">
+                                        <i class="fas fa-rocket"></i> Generate Final Library
+                                    </button>
+                                    </div>
                                 <div class="col-md-6">
-                                    <h5>Final Library Generation</h5>
-                                    <p class="text-muted">
-                                        This final step processes multiple files to truncate antibodies into segments based on the selected overlap regions 
-                                        and adds replication primers for synthesis.
-                                    </p>
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle"></i>
-                                        <strong>Multi-File Processing:</strong> This step automatically processes all files in the Primer/ directory.
-                                    </div>
-                                    <div class="alert alert-warning">
-                                        <i class="fas fa-exclamation-triangle"></i>
-                                        <strong>Prerequisites:</strong> Requires completed Steps 1-5 with corresponding files in:
-                                        <ul class="mb-0 mt-2">
-                                            <li><code>Primer/</code> - Primer sequence files</li>
-                                            <li><code>ui_results/</code> - FASTA sequence files</li>
-                                            <li><code>ui_results/segs_id/</code> - Overlap analysis CSV files</li>
-                                        </ul>
-                                    </div>
-                                    <div class="alert alert-success">
-                            </div>
-                            <div class="row mt-3">
-                                <div class="col-12">
+                                    <h5>Status</h5>
                                     <div class="card border-info">
                                         <div class="card-header bg-info text-white">
                                             <h6 class="mb-0"><i class="fas fa-files"></i> Files to be Processed</h6>
@@ -740,15 +700,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>                                    <button class="btn btn-success w-100" onclick="runChunkByOverlap()">
-                                        <i class="fas fa-rocket"></i> Generate Final Library
-                                    </button>
-                                    <div class="mt-3">
-                                        <small class="text-muted">
-                                            This will process all available files and create the final antibody library ready for synthesis.
-                                        </small>
-                                    </div>
-                                </div>
                             </div>
                             <div id="chunkResult" class="mt-3"></div>
                         </div>
@@ -756,7 +707,7 @@
                 </div>
                 
                 <!-- Sidebar -->
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="sidebar">
                         <h4><i class="fas fa-files-o"></i> File Manager</h4>
                         <div class="mb-3">
@@ -785,6 +736,37 @@
                             <li>Creating final libraries with primers</li>
                         </ul>
                     </div>
+                    
+                    <div class="sidebar">
+                        <h4><i class="fas fa-folder-open"></i> Example Files</h4>
+                        <div class="mb-2">
+                            <strong class="text-primary">📁 Input Files:</strong><br>
+                            <a href="/view_file/uploads/TableS1_full.csv" class="text-decoration-none" target="_blank">
+                                <small><i class="fas fa-file-csv text-success"></i> TableS1_full.csv</small>
+                            </a><br>
+                            <a href="/view_file/HA_screen/data/TableS1.csv" class="text-decoration-none" target="_blank">
+                                <small><i class="fas fa-file-csv text-success"></i> TableS1.csv</small>
+                            </a>
+                </div>
+                        <div class="mb-2">
+                            <strong class="text-info">🔄 Intermediate:</strong><br>
+                            <a href="/view_file/ui_results/TableS1_full_output.csv" class="text-decoration-none" target="_blank">
+                                <small><i class="fas fa-file-csv text-info"></i> TableS1_full_output.csv</small>
+                            </a><br>
+                            <a href="/view_file/ui_results/iteration_test_small.fa" class="text-decoration-none" target="_blank">
+                                <small><i class="fas fa-file-alt text-info"></i> iteration_test_small.fa</small>
+                            </a>
+            </div>
+                        <div class="mb-2">
+                            <strong class="text-success">📤 Final Output:</strong><br>
+                            <a href="/view_file/ui_results/test_final_oPool_design.csv" class="text-decoration-none" target="_blank">
+                                <small><i class="fas fa-file-csv text-success"></i> test_final_oPool_design.csv</small>
+                            </a>
+                        </div>
+                        <small class="text-muted">
+                            <i class="fas fa-lightbulb"></i> Click files to preview format
+                        </small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -800,6 +782,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             refreshFileList();
             setupFileUpload();
+            setupCDHitNegativeFileUpload(); // Setup CD-HIT negative file upload
+            detectGermlinePath();
+            loadChunkFileInfo();
+            loadOverlapFileInfo();
+            loadIterationInputInfo(); // Load iteration input info on page load
+            loadCDHitResultInputInfo(); // Load cdhit result input info on page load
         });
         
         // Toggle step visibility
@@ -887,6 +875,99 @@
             fileInfo.style.display = 'block';
         }
         
+        // Setup CD-HIT negative file upload
+        function setupCDHitNegativeFileUpload() {
+            const uploadArea = document.getElementById('cdhitNegativeUploadArea');
+            const fileInput = document.getElementById('cdhitNegativeFileInput');
+            
+            if (!uploadArea || !fileInput) return; // Elements don't exist yet
+            
+            // Drag and drop functionality
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleCDHitNegativeFileUpload(files[0]);
+                }
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleCDHitNegativeFileUpload(e.target.files[0]);
+                }
+            });
+        }
+        
+        // Handle CD-HIT negative file upload
+        function handleCDHitNegativeFileUpload(file) {
+            // Validate file type
+            if (!file.name.toLowerCase().endsWith('.csv') && !file.name.toLowerCase().endsWith('.tsv')) {
+                alert('Please upload a CSV or TSV file for negative control data.');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            // Show uploading status
+            const fileInfo = document.getElementById('cdhitNegativeFileInfo');
+            fileInfo.innerHTML = `
+                <div class="alert alert-info">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <strong>Uploading negative control file...</strong><br>
+                    <small>${file.name}</small>
+                </div>
+            `;
+            fileInfo.style.display = 'block';
+            
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Store the uploaded filename for later use
+                    window.cdhitNegativeFileName = data.filename;
+                    
+                    fileInfo.innerHTML = `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle"></i>
+                            <strong>Negative control file uploaded successfully!</strong><br>
+                            <small>${data.filename}</small>
+                        </div>
+                    `;
+                    refreshFileList();
+                } else {
+                    fileInfo.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Upload failed:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                fileInfo.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Upload failed</strong>
+                    </div>
+                `;
+            });
+        }
+        
         // Refresh file list
         function refreshFileList() {
             fetch('/get_file_list')
@@ -894,7 +975,7 @@
             .then(data => {
                 updateFileList('uploadFiles', data.upload_files);
                 updateFileList('resultFiles', data.result_files);
-                updateFileSelects(data.upload_files, data.result_files);
+                updateFileSelects(data.upload_files, data.result_files, data.ui_results_files);
             })
             .catch(error => {
                 console.error('Error fetching file list:', error);
@@ -931,12 +1012,12 @@
         }
         
         // Update file select dropdowns
-        function updateFileSelects(uploadFiles, resultFiles) {
-            const allFiles = [...uploadFiles, ...resultFiles];
+        function updateFileSelects(uploadFiles, resultFiles, uiResultsFiles) {
+            const allFiles = [...uploadFiles, ...resultFiles, ...(uiResultsFiles || [])];
             const fileNames = allFiles.map(f => f.name);
             
-            // Update all select elements
-            ['iterationInput', 'cdhitInput', 'overlapInput', 'iterationOutput', 'cdhitNegative', 'overlapNegative'].forEach(id => {
+            // Update dropdown for Step 5 negative control (Step 4 now uses file upload)
+            ['overlapNegative'].forEach(id => {
                 const select = document.getElementById(id);
                 if (select && select.tagName === 'SELECT') {
                     const currentValue = select.value;
@@ -950,6 +1031,10 @@
                     });
                 }
             });
+            
+            // Refresh the status cards for the steps that auto-detect files
+            loadIterationInputInfo();
+            loadCDHitResultInputInfo();
         }
         
         // Run pipeline steps
@@ -977,38 +1062,261 @@
         }
         
         function runIteration() {
+            // Automatically detect the most recent output file from Step 1
+            fetch('/get_file_list')
+                .then(response => response.json())
+                .then(fileData => {
+                    const allFiles = [...fileData.upload_files, ...fileData.result_files, ...(fileData.ui_results_files || [])];
+                    const outputFiles = allFiles.filter(file => file.name.endsWith('_output.csv') && file.step === 'step1')
+                        .sort((a, b) => new Date(b.modified) - new Date(a.modified));
+                    
+                    if (outputFiles.length === 0) {
+                        alert('No output files found from Step 1. Please complete Step 1 first.');
+                        return;
+            }
+                    
             const data = {
-                input_file: document.getElementById('iterationInput').value,
+                        input_file: outputFiles[0].name,
                 pool_size: document.getElementById('poolSize').value,
-                negative_file: document.getElementById('negativeFile').value,
+                        negative_file: outputFiles[0].name, // Use same file as negative control
                 output_file: document.getElementById('iterationOutput').value
             };
             
-            if (!data.input_file) {
-                alert('Please select an input file');
+                    runPipelineStep('iteration', data, 'iterationResult');
+                })
+                .catch(error => {
+                    alert('Error detecting input files: ' + error.message);
+                });
+        }
+        
+        // Global variable to track CD-HIT process
+        let currentCDHitProcessId = null;
+        let cdhitEventSource = null;
+        
+        function runCDHit() {
+            // Show output window and start process
+            const outputWindow = document.getElementById('cdhitOutputWindow');
+            const outputContent = document.getElementById('cdhitOutputContent');
+            const outputStatus = document.getElementById('cdhitOutputStatus');
+            const runBtn = document.getElementById('cdhitRunBtn');
+            const abortBtn = document.getElementById('cdhitAbortBtn');
+            const resultContainer = document.getElementById('cdhitResult');
+            
+            // Clear previous output
+            outputContent.textContent = '';
+            outputWindow.style.display = 'block';
+            
+            // Update buttons
+            runBtn.style.display = 'none';
+            abortBtn.style.display = 'inline-block';
+            
+            // Update status
+            outputStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting CD-HIT...';
+            
+            // Collect threshold parameters
+            const minThreshold = parseFloat(document.getElementById('cdhitMinThreshold').value);
+            const maxThreshold = parseFloat(document.getElementById('cdhitMaxThreshold').value);
+            const increment = parseFloat(document.getElementById('cdhitIncrement').value);
+            
+            // Validate parameters
+            if (minThreshold >= maxThreshold) {
+                alert('Minimum threshold must be less than maximum threshold');
+                cleanupCDHitProcess();
                 return;
             }
             
-            runPipelineStep('iteration', data, 'iterationResult');
+            if (increment <= 0 || increment > 0.5) {
+                alert('Increment must be between 0.01 and 0.5');
+                cleanupCDHitProcess();
+                return;
+            }
+            
+            // Start CD-HIT process
+            fetch('/run_cdhit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    min_threshold: minThreshold,
+                    max_threshold: maxThreshold,
+                    increment: increment
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.process_id) {
+                    currentCDHitProcessId = data.process_id;
+                    outputStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running CD-HIT clustering...';
+                    
+                    // Start listening to output stream
+                    cdhitEventSource = new EventSource(`/stream_output/${data.process_id}`);
+                    
+                    cdhitEventSource.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
+                        
+                        if (data.type === 'output') {
+                            outputContent.textContent += data.content;
+                            outputContent.scrollTop = outputContent.scrollHeight;
+                        } else if (data.type === 'done') {
+                            outputStatus.innerHTML = '<i class="fas fa-check-circle text-success"></i> CD-HIT completed successfully!';
+                            cleanupCDHitProcess();
+                            
+                            // Show success result
+                            resultContainer.innerHTML = `
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check-circle"></i>
+                                    <strong>CD-HIT completed successfully!</strong>
+                                    <br><small>Return code: ${data.return_code}</small>
+                                </div>
+                            `;
+                            
+                            // Add files created section
+                            if (data.files_created && data.files_created.length > 0) {
+                                let filesHtml = `
+                                    <div class="alert alert-info">
+                                        <h6><i class="fas fa-folder-open"></i> Files Created:</h6>
+                                        <ul class="mb-0">
+                                `;
+                                data.files_created.forEach(file => {
+                                    const statusIcon = file.exists ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>';
+                                    filesHtml += `
+                                        <li>${statusIcon} <strong>${file.path}</strong> 
+                                            <small class="text-muted">(${file.type}${file.size ? `, ${file.size}` : ''})</small>
+                                            <br><small>${file.description}</small>
+                                        </li>
+                                    `;
+                                });
+                                filesHtml += `</ul></div>`;
+                                resultContainer.innerHTML += filesHtml;
+                            }
+                            
+                            refreshFileList();
+                        } else if (data.type === 'error') {
+                            outputStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i> CD-HIT failed!';
+                            cleanupCDHitProcess();
+                            
+                            // Show error result
+                            resultContainer.innerHTML = `
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>CD-HIT failed!</strong><br>
+                                    <small>${data.content}</small>
+                                </div>
+                            `;
+                        }
+                    };
+                    
+                    cdhitEventSource.onerror = function(event) {
+                        outputStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-warning"></i> Connection error';
+                        cleanupCDHitProcess();
+                    };
+                } else {
+                    outputStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i> Failed to start';
+                    cleanupCDHitProcess();
+                    
+                    resultContainer.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Failed to start CD-HIT!</strong><br>
+                            <small>${data.error || 'Unknown error'}</small>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                outputStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i> Request failed';
+                cleanupCDHitProcess();
+                
+                resultContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error starting CD-HIT:</strong> ${error.message}
+                    </div>
+                `;
+            });
         }
         
-        function runCDHit() {
-            runPipelineStep('cdhit', {}, 'cdhitResult');
+        function abortCDHit() {
+            if (currentCDHitProcessId) {
+                if (confirm('Are you sure you want to abort the CD-HIT process?')) {
+                    fetch(`/abort_process/${currentCDHitProcessId}`, {
+                        method: 'POST'
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const outputStatus = document.getElementById('cdhitOutputStatus');
+                        const resultContainer = document.getElementById('cdhitResult');
+                        
+                        if (data.success) {
+                            outputStatus.innerHTML = '<i class="fas fa-stop-circle text-warning"></i> Process aborted by user';
+                            resultContainer.innerHTML = `
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-stop-circle"></i>
+                                    <strong>CD-HIT process aborted by user</strong>
+                                </div>
+                            `;
+                        } else {
+                            outputStatus.innerHTML = '<i class="fas fa-exclamation-triangle text-danger"></i> Failed to abort';
+                            resultContainer.innerHTML = `
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Failed to abort process:</strong> ${data.error}
+                                </div>
+                            `;
+                        }
+                        cleanupCDHitProcess();
+                    })
+                    .catch(error => {
+                        console.error('Error aborting process:', error);
+                        cleanupCDHitProcess();
+                    });
+                }
+            }
+        }
+        
+        function cleanupCDHitProcess() {
+            // Reset buttons
+            const runBtn = document.getElementById('cdhitRunBtn');
+            const abortBtn = document.getElementById('cdhitAbortBtn');
+            runBtn.style.display = 'inline-block';
+            abortBtn.style.display = 'none';
+            
+            // Close event source
+            if (cdhitEventSource) {
+                cdhitEventSource.close();
+                cdhitEventSource = null;
+            }
+            
+            // Clear process ID
+            currentCDHitProcessId = null;
+        }
+        
+        function toggleOutputWindow(windowId) {
+            const window = document.getElementById(windowId);
+            const content = window.querySelector('.card-body');
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                window.querySelector('.card-footer').style.display = 'block';
+            } else {
+                content.style.display = 'none';
+                window.querySelector('.card-footer').style.display = 'none';
+            }
         }
         
         function runCDHitResult() {
+            // Get uploaded negative file
+            const negativeFile = window.cdhitNegativeFileName;
+            
+            if (!negativeFile) {
+                alert('Please upload a negative control file first');
+                        return;
+            }
+                    
             const data = {
-                input_file: document.getElementById('cdhitInput').value,
-                negative_file: document.getElementById('cdhitNegative').value,
+                negative_file: negativeFile,
                 group_size: document.getElementById('groupSize').value,
                 num_groups: document.getElementById('numGroups').value,
                 num_negative: document.getElementById('numNegative').value
             };
-            
-            if (!data.input_file) {
-                alert('Please select an input file');
-                return;
-            }
             
             runPipelineStep('cdhit_result', data, 'cdhitResultResult');
         }
@@ -1027,59 +1335,130 @@
                 .then(data => {
                     if (data.success && data.input_files.length > 0) {
                         // Use the first available input file (or could process all)
-                        const inputFile = data.input_files[0];
+                        const inputFile = data.input_files[0]; // This is just a filename string
                         const requestData = {
-                            input_file: inputFile,
+                            input_file: inputFile, // Use the filename directly
                             negative_file: negativeFile
                         };
                         runPipelineStep("overlap_check", requestData, "overlapResult");
+                    } else {
+                        alert("No input files found from Step 4. Please complete Step 4 first.");
+                    }
+                })
+                .catch(error => {
+                    alert(`Error detecting input files: ${error.message}`);
+                });
+        }
+        
+        function runChunkByOverlap() {
+            const outputName = document.getElementById("chunkOutputName").value || "library";
+            runPipelineStep("chunk_by_overlap", { output_name: outputName }, "chunkResult");
         }
         
         // Load file information for Overlap Check step
         function loadOverlapFileInfo() {
-            fetch("/get_overlap_input_files")
+            fetch('/get_file_list')
                 .then(response => response.json())
                 .then(data => {
-                    const fileInfoDiv = document.getElementById("overlapFileInfo");
-                    if (data.success) {
-                        let html = `<div class="row">`;
-                        html += `<div class="col-md-6"><strong>📁 Available Input Files:</strong><br><small class="text-muted">${data.count} files from Step 4</small></div>`;
-                        html += `<div class="col-md-6"><strong>📊 Expected Output:</strong><br><small class="text-muted">CSV files in segs_id/ directory</small></div>`;
+                    const fileInfoDiv = document.getElementById("overlapInputInfo");
+                    
+                    // Look for Re_assembled_*.fa files from step4
+                    const allFiles = [...data.upload_files, ...data.result_files, ...(data.ui_results_files || [])];
+                    const step4Files = allFiles.filter(file => 
+                        file.step === 'step4' && file.name.startsWith('Re_assembled_') && file.name.endsWith('.fa')
+                    );
+                    
+                    let html = `<div class="row">`;
+                    html += `<div class="col-md-6"><strong>📁 Step 4 Output:</strong><br><small class="text-muted">${step4Files.length} files available</small></div>`;
+                    html += `<div class="col-md-6"><strong>📊 Output Directory:</strong><br><small class="text-muted">segs_id/ folder</small></div>`;
+                    html += `</div>`;
+                    
+                    if (step4Files.length > 0) {
+                        html += `<div class="alert alert-success mt-2 mb-0">`;
+                        html += `<i class="fas fa-check-circle"></i> Ready to process!<br>`;
+                        html += `<small>Found ${step4Files.length} Re_assembled_*.fa files from Step 4</small>`;
                         html += `</div>`;
-                        if (data.count > 0) {
-                            html += `<div class="alert alert-success mt-2 mb-0"><i class="fas fa-check-circle"></i> Input files are available. Ready to process!</div>`;
-                            if (data.input_files.length > 0) {
-                                html += `<div class="mt-2"><strong>Files to be processed:</strong><ul class="mb-0">`;
-                                data.input_files.slice(0, 5).forEach(file => {
-                                    html += `<li><code>${file}</code></li>`;
-                                });
-                                if (data.input_files.length > 5) {
-                                    html += `<li><em>... and ${data.input_files.length - 5} more files</em></li>`;
-                                }
-                                html += `</ul></div>`;
-                            }
-                        } else {
-                            html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> No input files found. Please complete Step 4 first.</div>`;
-                        }
-                        fileInfoDiv.innerHTML = html;
                     } else {
-                        fileInfoDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error loading file information: ${data.error}</div>`;
+                        html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> No input files found. Please complete Step 4 first.</div>`;
                     }
+                    
+                    fileInfoDiv.innerHTML = html;
                 })
                 .catch(error => {
-                    document.getElementById("overlapFileInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                    document.getElementById("overlapInputInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
                 });
-        }                })
-                .catch(error => {
-                    alert(`Error detecting input files: ${error.message}`);
-                });            }
-            
-            runPipelineStep('overlap_check', data, 'overlapResult');
         }
         
-        function runChunkByOverlap() {
-            const outputName = document.getElementById("outputName").value || "library";
-            runPipelineStep("chunk_by_overlap", { output_name: outputName }, "chunkResult");
+        // Load file information for Iteration step (Step 2)
+        function loadIterationInputInfo() {
+            fetch('/get_file_list')
+                .then(response => response.json())
+                .then(data => {
+                    const fileInfoDiv = document.getElementById("iterationInputInfo");
+                    
+                    // Look for CSV files ending with "_output.csv" in step1 folder (from Step 1)
+                    const allFiles = [...data.upload_files, ...data.result_files, ...(data.ui_results_files || [])];
+                    const outputFiles = allFiles
+                        .filter(file => file.name.endsWith('_output.csv') && file.step === 'step1')
+                        .sort((a, b) => new Date(b.modified) - new Date(a.modified)); // Most recent first
+                    
+                    let html = `<div class="row">`;
+                    html += `<div class="col-md-6"><strong>📁 Step 1 Output:</strong><br><small class="text-muted">${outputFiles.length} files available</small></div>`;
+                    html += `<div class="col-md-6"><strong>📊 Will Use:</strong><br><small class="text-muted">Most recent *_output.csv</small></div>`;
+                    html += `</div>`;
+                    
+                    if (outputFiles.length > 0) {
+                        html += `<div class="alert alert-success mt-2 mb-0"><i class="fas fa-check-circle"></i> Will use: <strong>${outputFiles[0].name}</strong></div>`;
+                    } else {
+                        html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> No output files found. Please complete Step 1 first.</div>`;
+                    }
+                    
+                    fileInfoDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById("iterationInputInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                });
+        }
+        
+        // Load file information for CD-HIT Result step (Step 4)
+        function loadCDHitResultInputInfo() {
+            fetch('/get_file_list')
+                .then(response => response.json())
+                .then(data => {
+                    const fileInfoDiv = document.getElementById("cdhitResultInputInfo");
+                    
+                    // Look for the main input file and negative control file
+                    const allFiles = [...data.upload_files, ...data.result_files, ...(data.ui_results_files || [])];
+                    const outputFiles = allFiles.filter(file => file.name.endsWith('_output.csv'))
+                        .sort((a, b) => new Date(b.modified) - new Date(a.modified));
+                    const fastaFiles = allFiles.filter(file => file.name.endsWith('.fa'))
+                        .sort((a, b) => new Date(b.modified) - new Date(a.modified));
+                    
+                    let html = `<div class="row">`;
+                    html += `<div class="col-md-6"><strong>📁 Input Files:</strong><br><small class="text-muted">Step 1 + Step 2 outputs</small></div>`;
+                    html += `<div class="col-md-6"><strong>📊 Auto-detect:</strong><br><small class="text-muted">Most recent files</small></div>`;
+                    html += `</div>`;
+                    
+                    // Filter FASTA files to only show those from step2 
+                    const step2FastaFiles = fastaFiles.filter(file => 
+                        file.step === 'step2' || file.name.includes('iteration_output')
+                    );
+                    
+                    if (step2FastaFiles.length > 0 && outputFiles.length > 0) {
+                        html += `<div class="alert alert-success mt-2 mb-0">`;
+                        html += `<i class="fas fa-check-circle"></i> Ready!<br>`;
+                        html += `<small>Input: <strong>${step2FastaFiles[0].name}</strong> (Step 2 FASTA)<br>`;
+                        html += `Negative: <em>User selected from dropdown</em> (CSV)</small>`;
+                        html += `</div>`;
+                    } else {
+                        html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> Missing required files. Complete previous steps.</div>`;
+                    }
+                    
+                    fileInfoDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById("cdhitResultInputInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
+                });
         }
         
         // Load file information for Chunk by Overlap step
@@ -1090,24 +1469,25 @@
                     const fileInfoDiv = document.getElementById("chunkFileInfo");
                     if (data.success) {
                         let html = `<div class="row">`;
-                        html += `<div class="col-md-4"><strong>📁 Primer Files:</strong><br><small class="text-muted">${data.primer_count} files</small></div>`;
-                        html += `<div class="col-md-4"><strong>🧬 Sequence Files:</strong><br><small class="text-muted">${data.sequence_count} files</small></div>`;
-                        html += `<div class="col-md-4"><strong>📊 Overlap Files:</strong><br><small class="text-muted">${data.overlap_count} files</small></div>`;
+                        html += `<div class="col-md-4"><strong>📁 Primers:</strong><br><small class="text-muted">${data.primer_count} files</small></div>`;
+                        html += `<div class="col-md-4"><strong>🧬 Sequences:</strong><br><small class="text-muted">${data.sequence_count} files</small></div>`;
+                        html += `<div class="col-md-4"><strong>📊 Overlaps:</strong><br><small class="text-muted">${data.overlap_count} files</small></div>`;
                         html += `</div>`;
                         if (data.primer_count > 0 && data.sequence_count > 0 && data.overlap_count > 0) {
-                            html += `<div class="alert alert-success mt-2 mb-0"><i class="fas fa-check-circle"></i> All required files are available. Ready to process!</div>`;
+                            html += `<div class="alert alert-success mt-2 mb-0"><i class="fas fa-check-circle"></i> All files ready!</div>`;
                         } else {
-                            html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> Some required files are missing. Please complete previous steps first.</div>`;
+                            html += `<div class="alert alert-warning mt-2 mb-0"><i class="fas fa-exclamation-triangle"></i> Missing files. Complete previous steps.</div>`;
                         }
                         fileInfoDiv.innerHTML = html;
                     } else {
-                        fileInfoDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error loading file information: ${data.error}</div>`;
+                        fileInfoDiv.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${data.error}</div>`;
                     }
                 })
                 .catch(error => {
                     document.getElementById("chunkFileInfo").innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> Error: ${error.message}</div>`;
                 });
-        }        }        
+        }
+        
         // Generic pipeline step runner
         function runPipelineStep(step, data, resultContainerId) {
             const resultContainer = document.getElementById(resultContainerId);
@@ -1127,15 +1507,39 @@
             })
             .then(response => response.json())
             .then(result => {
+                let resultHtml = '';
                 if (result.success) {
-                    resultContainer.innerHTML = `
+                    resultHtml = `
                         <div class="alert alert-success">
                             <i class="fas fa-check-circle"></i>
                             <strong>${result.step} completed successfully!</strong>
                             ${result.preview ? `<br><small>Output: ${result.total_rows} rows</small>` : ''}
                             ${result.file_size_mb ? `<br><small>File size: ${result.file_size_mb} MB</small>` : ''}
                         </div>
-                        ${result.preview ? `
+                    `;
+                    
+                    // Add files created section
+                    if (result.files_created && result.files_created.length > 0) {
+                        resultHtml += `
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-folder-open"></i> Files Created:</h6>
+                                <ul class="mb-0">
+                        `;
+                        result.files_created.forEach(file => {
+                            const statusIcon = file.exists ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>';
+                            resultHtml += `
+                                <li>${statusIcon} <strong>${file.path}</strong> 
+                                    <small class="text-muted">(${file.type}${file.size ? `, ${file.size}` : ''})</small>
+                                    <br><small>${file.description}</small>
+                                </li>
+                            `;
+                        });
+                        resultHtml += `</ul></div>`;
+                    }
+                    
+                    // Add preview if available
+                    if (result.preview) {
+                        resultHtml += `
                             <div class="result-preview">
                                 <h6>Output Preview:</h6>
                                 <div class="table-responsive">
@@ -1151,28 +1555,46 @@
                                     </table>
                                 </div>
                             </div>
-                        ` : ''}
                     `;
+                    }
                     refreshFileList();
                 } else {
-                    resultContainer.innerHTML = `
+                    resultHtml = `
                         <div class="alert alert-danger">
                             <i class="fas fa-exclamation-triangle"></i>
                             <strong>${result.step} failed!</strong><br>
                             <small>${result.error}</small>
                         </div>
                     `;
+                    
+                    // Add files created section even for failures
+                    if (result.files_created && result.files_created.length > 0) {
+                        resultHtml += `
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-folder-open"></i> Files Created (before failure):</h6>
+                                <ul class="mb-0">
+                        `;
+                        result.files_created.forEach(file => {
+                            const statusIcon = file.exists ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>';
+                            resultHtml += `
+                                <li>${statusIcon} <strong>${file.path}</strong> 
+                                    <small class="text-muted">(${file.type}${file.size ? `, ${file.size}` : ''})</small>
+                                    <br><small>${file.description}</small>
+                                </li>
+                            `;
+                        });
+                        resultHtml += `</ul></div>`;
+                    }
                 }
+                resultContainer.innerHTML = resultHtml;
             })
             .catch(error => {
                 resultContainer.innerHTML = `
                     <div class="alert alert-danger">
                         <i class="fas fa-exclamation-triangle"></i>
-        document.addEventListener("DOMContentLoaded", function() {
-            detectGermlinePath();
-            loadChunkFileInfo();
-            loadOverlapFileInfo();
-        });                `;
+                        <strong>Error:</strong> ${error.message}
+                    </div>
+                `;
             });
         }
         
@@ -1224,14 +1646,9 @@
                 })
                 .catch(error => {
                     statusDiv.innerHTML += `<div class="text-danger mt-2"><i class="fas fa-times-circle"></i> Error checking environment: ${error.message}</div>`;
-                });
+            });
         }
         
-        // Auto-detect germline path on page load
-        document.addEventListener("DOMContentLoaded", function() {
-            detectGermlinePath();
-            loadChunkFileInfo();
-        });        
         // File operations
         function previewFile(filename) {
             fetch(`/preview/${filename}`)
@@ -1268,6 +1685,7 @@
                 </div>
             `;
             document.body.appendChild(modal);
+            new bootstrap.Modal(modal).show();
         }
         
         function showFastaPreview(data, filename) {
@@ -1277,6 +1695,7 @@
                 <pre class="bg-light p-3 rounded">${data.data.join('')}</pre>
             `;
             document.body.appendChild(modal);
+            new bootstrap.Modal(modal).show();
         }
         
         function showTextPreview(data, filename) {
@@ -1286,6 +1705,7 @@
                 ${data.truncated ? '<p class="text-muted"><small>Content truncated</small></p>' : ''}
             `;
             document.body.appendChild(modal);
+            new bootstrap.Modal(modal).show();
         }
         
         function createModal(filename, title) {

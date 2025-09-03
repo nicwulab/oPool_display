@@ -11,9 +11,29 @@ parser.add_argument('-n','-N','--negative')
 parser.add_argument('-o','-U','--output')     
 
 args = parser.parse_args()
-INPUT     = args.input
-Pool_size = args.pool
-NEGTIVE   = args.negative
+
+# Handle input file path - if just filename provided, assume it's in step1 folder
+if args.input:
+    if '/' not in args.input and not args.input.startswith('ui_results/'):
+        # Just a filename, prepend step1 path
+        INPUT = f"ui_results/step1/{args.input}"
+    else:
+        INPUT = args.input
+else:
+    INPUT = "ui_results/step1/extract_output.csv"
+
+Pool_size = args.pool if args.pool else 200
+
+# Handle negative control file path - if just filename provided, assume it's in uploads folder
+if args.negative:
+    if '/' not in args.negative and not args.negative.startswith('uploads/'):
+        # Just a filename, prepend uploads path
+        NEGTIVE = f"uploads/{args.negative}"
+    else:
+        NEGTIVE = args.negative
+else:
+    NEGTIVE = "uploads/random_neg.csv"
+
 OUTPUT    = args.output
 
 '''
