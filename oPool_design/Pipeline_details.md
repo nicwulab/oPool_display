@@ -95,6 +95,10 @@ NOTE: It is important to skip the first row when making the table. This is due t
 
 ### **1. Data Filtering & Extraction**
 
+**What it looks like in UI**
+
+![Step1](screenshots/Step1.png)
+
 **Command:**
 ```bash
 python HA_screen/script/extract.py -i HA_screen/data/TableS1.csv -v IGHV1-69 IGHV6-1 IGHV1-18 -d IGHD3-9 -g ${pyir_db}/Ig/human -o ui_results/filtered_output.csv
@@ -120,6 +124,10 @@ python HA_screen/script/extract.py -i HA_screen/data/TableS1.csv --skip-clonotyp
 
 ### **2. Sequence Segments Iteration**
 
+**What it looks like in UI**
+
+![Step2](screenshots/Step2.png)
+
 **Command:**
 ```bash
 python HA_screen/script/iteration.py -i ui_results/filtered_output.csv -p 2000000 -n HA_screen/result/random_neg.csv -o ui_results/iteration_output.fa
@@ -139,6 +147,10 @@ python HA_screen/script/iteration.py -i ui_results/filtered_output.csv -p 200000
 
 ### **3. CD-HIT Clustering**
 
+**What it looks like in UI**
+
+![Step3](screenshots/Step3.png)
+
 **Command:**
 ```bash
 bash HA_screen/script/cd-hit.sh
@@ -152,6 +164,10 @@ bash HA_screen/script/cd-hit.sh
 
 ### **4. CD-HIT Result Selection**
 
+**What it looks like in UI**
+
+![Step4](screenshots/Step4.png)
+
 **Command:**
 ```bash
 python HA_screen/script/cdhit_result.py -i ui_results/iteration_output.fa -n HA_screen/result/random_neg.csv -gs 25 -ng 12 -nn 2
@@ -164,6 +180,10 @@ python HA_screen/script/cdhit_result.py -i ui_results/iteration_output.fa -n HA_
 
 ### **5. ChunkByOverlap Processing**
 
+**What it looks like in UI**
+
+![Step5](screenshots/Step5.png)
+
 **Command:**
 ```bash
 python HA_screen/script/ChunkByOverlap.py
@@ -174,6 +194,10 @@ python HA_screen/script/ChunkByOverlap.py
 - Optimizes overlap regions for synthesis
 
 ### **6. Final Pool Assembly**
+
+**What it looks like in UI**
+
+![Step6](screenshots/Step6.png)
 
 **Result:**
 - Production-ready DNA sequences for antibody library synthesis
